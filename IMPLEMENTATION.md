@@ -4,8 +4,6 @@
 
 Help procurement teams, electrical consultants, and project engineers find the right control panel, verify Samcon's capabilities, and submit a project enquiry. The primary action is **Request a quote**. **Explore products** and **Download brochure** support visitors who are still evaluating suppliers.
 
-Use this plan and the product concepts for design review before implementation starts.
-
 The first local implementation uses dependency-free Node.js static rendering with shared templates and structured product data. The package registry was unavailable in this workspace. Connect the delivery endpoint after the sales workflow and hosting are confirmed.
 
 ## Current site audit
@@ -42,17 +40,19 @@ Use **Products, Capabilities, Projects, Resources, About, Contact** in the heade
 
 Use the white industrial editorial reference (image 3) for oversized type, asymmetrical image-and-copy layouts, generous whitespace, and disciplined grids. Use the dark technical detail reference (image 4) for thin rules, compact specification labels, and an engineering-style product view. Translate those choices to Samcon's cabinet hardware. Keep the technical canvas contained inside the white page and give product imagery room to show enclosure seams, locks, meters, and feeder compartments. Use the approved Samcon logo.
 
+The later skh.design reference sets the structure for the implemented layout. Thin rules align the header, image captions, product index and workshop spread. A dark cell at the right edge of the desktop header holds the quote link. On phones the same action appears inside the menu. Use the manufacturer’s original logo in the shared header and footer. [Layout reference](https://www.skh.design/) · [Samcon logo](https://www.samconcontrolpanel.com/images/logo.png)
+
 ### Color and contrast
 
 The four swatches below were sampled from the supplied palette (image 2). Apply **70 / 20 / 10** as an approximate balance of visible interface surfaces. Photography and technical media have their own tonal range.
 
 | Share | Color | Use |
 | --- | --- | --- |
-| 70% | White `#FFFFFF` | Main canvas, navigation, product details, white space, and open reading areas. |
-| 20% | Pale blue `#F1F6FF` and `#E8F0FF` | Product media wells, grouped specifications, resources, and supporting section backgrounds. |
-| 10% | Royal blue `#1B4EF5`, mid blue `#3874FF`, light blue `#5996FF`, and pale lilac `#F4CEFF` | Royal blue for the primary quote button, links, selection, and focus. Mid and light blue for graphic accents and fills. Use lilac sparingly for a secondary callout within the 10%. |
+| 70% | Warm white `#FCFBF8` and white `#FFFFFF` | Page canvas, header, product lists and open reading areas. |
+| 20% | Pale blue `#F1F6FF` and `#EDF2FC` | Image controls, grouped specifications, filters and the enquiry section. |
+| 10% | Signal red `#BF202B` and royal blue `#1B4EF5` | Red picks up the logo in primary actions and section markers. Blue identifies links, selected filters and keyboard focus. |
 
-- Use `#111827` for text, `#475569` for secondary copy, `#657693` for essential control borders, and `#153DCC` for the primary button hover. Inside a technical preview, use a near-black `#151922` canvas and light `#D5DDEF` labels.
+- Use `#191A19` for text, `#555856` for secondary copy, `#657693` for essential control borders, and `#951722` for red button hovers. Inside a technical preview, use a near-black `#151922` canvas and light `#D5DDEF` labels.
 - White on `#1B4EF5` has **6.08:1** contrast. White on `#3874FF` and `#5996FF` has **4.11:1** and **2.90:1**, respectively. Use those two fills for accents and keep normal text on tested combinations. Dark text `#111827` on `#5996FF` has **6.11:1**. Use an underline, visible focus outline, or state label wherever a color change carries meaning. [WCAG text contrast](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) · [WCAG non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)
 
 ### Typography
@@ -68,18 +68,19 @@ Set the desktop hero to roughly 64–80 px at 600–650 weight and mobile to 36�
 
 ### Page compositions
 
-- **Home.** Start with the logo and clear quote action, then a 5/7 editorial split with the headline “Electrical control panels for industrial projects” on the left and a large PCC/MCC cabinet on the right. Follow with three featured products, manufacturing and quality evidence, approved projects, then resources and the enquiry prompt. Use photographs of Samcon's facility and customer installations for these evidence sections.
-- **Catalog.** Show all nine products across three clearly named groups. Give each card a consistent 4:3 image well, product name, and one sentence about the application. Show three columns on desktop, two on tablet, and one on narrow phones. Keep each card a single clear link to the detail page.
+- **Home.** Pair the headline with a full-bleed copper busbar detail in a 55/45 split. Visitors can use the image controls to inspect two more generated studies, a withdrawable feeder and a folded steel enclosure. Present the nine products in a ruled index, followed by fabrication, applications and the enquiry action. Label generated images as studies.
+- **Catalog.** Give each of the three groups one large material study beside a list of product names and applications. Each row links to a product detail. An individual product page shows Samcon's corresponding photograph when available and a labelled local concept as its fallback. [Samcon product gallery](https://www.samconcontrolpanel.com/gallery-control-panels.php)
 - **Product detail.** Open with the product name, summary, quote action, gallery, and a compact summary of approved key specs. Follow with applications, options, a full specification list or table, related brochure, and relevant projects. Where source material supports it, add a contained dark technical view with a line drawing or orthographic render. Place the dimensions and labels in accessible page content next to the image.
 - **Capabilities, projects, and resources.** Alternate clear text columns with wide facility and installation photographs. Give projects an application, supplied equipment, and verified scope. Group resources by document type and show the version or date next to the download link when available.
-- **Responsive layout.** Use a 12-column desktop grid with an approximately 1,360 px content cap. On mobile, place hero copy and both actions before the product image. Stack product details and specs in reading order and keep the contact action easy to reach. Use padding of about 20–24 px at phone widths. Review at 390 px, 768 px, and 1,440 px.
+- **Responsive layout.** Align sections to common outer rules up to 1,536 px wide. On narrow phones, stack the introduction, image, controls and product index in reading order. Give the image controls at least 44 px of touch space. Review at 320 px, 390 px, 768 px and 1,440 px.
 
 ### Subtle motion
 
 | Trigger | Motion | Settled state and reduced-motion behavior |
 | --- | --- | --- |
 | Initial hero render | Keep the headline and quote action visible from first paint. A short 250–350 ms fade on already-loaded media is optional. | The image has a reserved aspect ratio and remains still. Show it immediately with reduced motion. |
-| Product card hover or keyboard focus | Transition the border and image tint over 160–220 ms. Optionally lift a hovered card 2 px on pointer devices. | Show a clear focus outline and steady card position when motion is reduced. Touch users get the same link and visible press feedback. |
+| Scroll through hero and desktop product index | Translate the cropped hero image up to 36 px. Keep the index illustration pinned beside its product groups and crossfade when the next group reaches mid-screen. | With reduced motion, keep the hero still and switch index images immediately. Stack the illustration above the list on phones. |
+| Visitors select a material study | The previous and next buttons cycle through the three studies. Crossfade the image and update the visible caption and slide count. | Keyboard and touch activate the same buttons. The caption announces each selection and the reduced-motion view switches immediately. |
 | Selected below-the-fold sections enter view | One 300–450 ms eased reveal with an 8–12 px rise on supporting media. | Once visible, the media stays in place. Reduced-motion and script-free views show the content immediately. |
 | Mobile menu and product image view change | Open or close in about 180–220 ms. Swap already loaded views with a brief crossfade. | Menu focus follows the open state and returns on close. Reduced-motion changes are immediate. |
 
