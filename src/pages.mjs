@@ -18,8 +18,8 @@ function button(label, href, style = 'primary') {
 
 function wordmark() {
   return `<a href="/" class="wordmark" aria-label="Samcon home">
-    <span class="brand-fallback"><strong>SAMCON</strong><small>Industrial Controls</small></span>
-    <img class="brand-original" src="https://www.samconcontrolpanel.com/images/logo.png" alt="Samcon Industrial Controls" data-original-logo>
+    <img src="/assets/samcon.svg" width="80" height="49" alt="">
+    <span class="company-lockup">Industrial Controls<small>Private Limited</small></span>
   </a>`;
 }
 
@@ -38,7 +38,7 @@ function layout({ path, title, description, content, isHome = false }) {
   <meta name="description" content="${escape(description)}">
   <meta name="theme-color" content="#ffffff">
   <title>${escape(isHome ? title : `${title} | Samcon`)}</title>
-  <link rel="icon" href="https://www.samconcontrolpanel.com/images/logo.png" type="image/png">
+  <link rel="icon" href="/assets/samcon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/site.css">
   <link rel="stylesheet" href="/grid.css">
@@ -89,7 +89,7 @@ function productImage(product, { priority = false, sizes = '(min-width: 75rem) 3
 function productCard(product) {
   return `<article class="product-card">
     <a href="${productPath(product)}">
-      <span class="index-marker" aria-hidden="true"></span>
+      <div class="card-equipment">${productImage(product)}</div>
       <div class="product-card-content">
         <h3>${escape(product.name)}</h3>
         <p>${escape(product.summary)}</p>
@@ -150,13 +150,12 @@ function rangeSection() {
 
 function homePage() {
   return `<section class="frame opening" aria-labelledby="home-title">
-    <div class="opening-meta"><span>Panel manufacturing</span><span>Asangaon, Maharashtra</span></div>
     <div class="opening-layout">
       <div class="opening-copy">
-        <p class="origin-line">Since 1998</p>
-        <h1 id="home-title">Electrical<br>control panels<span>.</span></h1>
+        <p class="origin-line">Asangaon, Maharashtra · Est. 1998</p>
+        <h1 id="home-title">Industrial power<br>and control<span>.</span></h1>
         <div class="opening-summary"><p>Samcon designs and builds electrical assemblies for power distribution, motor control and building services.</p>
-        ${button('Explore panel range', '#panel-range')}</div>
+        <div class="hero-actions">${button('Explore products', '/products/')}<a href="/capabilities/">Our capabilities</a></div></div>
       </div>
       <figure class="opening-art">
         <div class="material-window" data-parallax>
@@ -172,7 +171,7 @@ function homePage() {
       </figure>
     </div>
     <nav class="opening-nav" aria-label="Explore Samcon">
-      <a href="#panel-range">Product index</a><a href="#manufacturing">Manufacturing</a><a href="/resources/">Technical downloads</a>
+      ${groups.map(group => `<a href="/products/?group=${group.id}">${group.name}<span aria-hidden="true">↗</span></a>`).join('')}
     </nav>
   </section>
   ${rangeSection()}
@@ -201,8 +200,7 @@ function catalogPage() {
       ${groups.map(({ id, name }) => `<button type="button" data-filter="${id}" aria-pressed="false">${name}</button>`).join('')}
     </div>
     <p class="visually-hidden" role="status" data-filter-status></p>
-    ${groups.map(({ id, name, summary }, index) => `<section class="catalog-group" id="${id}" data-group="${id}" aria-labelledby="${id}-title">
-      <div class="catalog-art">${studyImage(studies[index])}<span>Design study</span></div>
+    ${groups.map(({ id, name, summary }) => `<section class="catalog-group" id="${id}" data-group="${id}" aria-labelledby="${id}-title">
       <div class="section-heading"><h2 id="${id}-title">${name}</h2><p>${summary}</p></div>
       <div class="product-grid">${products.filter(({ group }) => group === id).map(productCard).join('')}</div>
     </section>`).join('')}
@@ -222,9 +220,18 @@ const manufacturerImages = {
 function productPage(product) {
   const group = groups.find(({ id }) => id === product.group);
   const isFlagship = product.slug === 'pcc-mcc';
+  const ordered = groups.flatMap(group => products.filter(item => item.group === group.id));
+  const index = ordered.indexOf(product);
+  const adjacent = step => ordered[(index + step + ordered.length) % ordered.length];
   const related = products.filter(({ group: id, slug }) => id === group.id && slug !== product.slug).slice(0, 2);
   return `<section class="frame product-top">
     ${breadcrumb([['Products', '/products/']], product.name)}
+    <nav class="panel-browser" aria-label="Product navigation">
+      <details><summary>Browse all panels <span aria-hidden="true">⌄</span></summary>
+        <div class="panel-directory">${groups.map(group => `<div><strong>${group.name}</strong>${ordered.filter(item => item.group === group.id).map(item => `<a href="${productPath(item)}" ${item === product ? 'aria-current="page"' : ''}>${escape(item.name)}</a>`).join('')}</div>`).join('')}</div>
+      </details>
+      <div class="panel-paging"><a href="${productPath(adjacent(-1))}" aria-label="Previous panel: ${escape(adjacent(-1).name)}">← Previous</a><span>${index + 1} / ${ordered.length}</span><a href="${productPath(adjacent(1))}" aria-label="Next panel: ${escape(adjacent(1).name)}">Next →</a></div>
+    </nav>
     <div class="product-intro">
       <div class="product-copy">
         <a class="eyebrow text-link" href="/products/?group=${group.id}">${group.name}</a>

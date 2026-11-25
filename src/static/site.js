@@ -29,13 +29,18 @@ if (header && menuToggle && menu) {
   matchMedia('(min-width: 64rem)').addEventListener('change', () => setMenu(false));
 }
 
-for (const logo of document.querySelectorAll('[data-original-logo]')) {
-  const showLogo = () => logo.closest('.wordmark').classList.add('has-logo');
-  logo.addEventListener('load', showLogo, { once: true });
-  if (logo.complete && logo.naturalWidth) showLogo();
-}
-
 const productFigure = document.querySelector('[data-source-image]');
+const directory = document.querySelector('.panel-browser details');
+if (directory) {
+  document.addEventListener('click', event => {
+    if (!directory.contains(event.target)) directory.open = false;
+  });
+  directory.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || !directory.open) return;
+    directory.open = false;
+    directory.querySelector('summary').focus();
+  });
+}
 if (productFigure) {
   const photo = new Image();
   photo.alt = document.querySelector('.product-copy h1').textContent + ', photographed by Samcon';

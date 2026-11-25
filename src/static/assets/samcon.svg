@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 73" role="img" aria-labelledby="title">
+  <title id="title">Samcon</title>
+  <path fill="#d62536" d="M2 2h116v2H2zm0 5h116v3H2zm0 6h116v4H2zm0 7h116v5H2z"/>
+  <text x="1" y="47" textLength="118" lengthAdjust="spacingAndGlyphs" font-family="Arial, sans-serif" font-size="25" font-weight="900" fill="#122342">SAMCON</text>
+  <path fill="#17449b" d="M2 51h116v20H2z"/>
+  <text x="60" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" letter-spacing="2" font-weight="700" fill="white">SINCE 1998</text>
+</svg>
