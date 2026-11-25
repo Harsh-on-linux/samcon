@@ -127,7 +127,7 @@ export const products = [
 ];
 
 export const resources = [
-  { title: 'Samcon TTA brochure', line: 'Type-tested assembly brochure', url: 'https://www.sme.in/samconicpl/pdf/Samcon_TTA_Brochure.pdf' },
-  { title: 'Samcon L&T Ti brochure', line: 'L&T Ti switchboard brochure', url: 'https://www.sme.in/samconicpl/pdf/Samcon_LT_TI_BROCHURE.pdf' },
-  { title: 'Panel installation manual', line: 'Installation and handling reference', url: 'https://www.samconcontrolpanel.com/pdf/Installation-Manual-Method.pdf' },
+  { section: 'Brochures', title: 'Samcon TTA brochure', line: 'Type-tested assembly brochure', url: 'https://www.sme.in/samconicpl/pdf/Samcon_TTA_Brochure.pdf' },
+  { section: 'Brochures', title: 'Samcon L&T Ti brochure', line: 'L&T Ti switchboard brochure', url: 'https://www.sme.in/samconicpl/pdf/Samcon_LT_TI_BROCHURE.pdf' },
+  { section: 'Installation', title: 'Panel installation manual', line: 'Installation and handling reference', url: 'https://www.samconcontrolpanel.com/pdf/Installation-Manual-Method.pdf' },
 ];

@@ -58,7 +58,7 @@ function layout({ path, title, description, content, isHome = false }) {
   } catch {}</script>` : ''}
   <script src="/site.js" defer></script>
 </head>
-<body${isHome ? ' class="home-page"' : ''}>
+<body id="top"${isHome ? ' class="home-page"' : ''}>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" data-header>
     <div class="frame header-inner">
@@ -86,7 +86,7 @@ function layout({ path, title, description, content, isHome = false }) {
         <a class="text-link" href="mailto:${company.email}">${company.email}</a>
       </div>
     </div>
-    <div class="frame footer-bottom">${company.name}</div>
+    <div class="frame footer-bottom">${company.name}<a href="#top">Back to top ↑</a></div>
   </footer>
 </body>
 </html>`;
@@ -103,11 +103,12 @@ function productImage(product, { priority = false, sizes = '(min-width: 75rem) 3
 function productCard(product) {
   return `<article class="product-card">
     <a href="${productPath(product)}">
-      <div class="card-equipment">${productImage(product)}</div>
+      <div class="card-equipment">${productImage(product, { sizes: '112px' })}</div>
       <div class="product-card-content">
-        <h3>${escape(product.name)}</h3>
+        <h3>${escape(product.title)}</h3>
         <p>${escape(product.summary)}</p>
       </div>
+      <span class="row-arrow" aria-hidden="true">→</span>
     </a>
   </article>`;
 }
@@ -165,18 +166,21 @@ function homePage() {
 }
 
 function catalogPage() {
-  return `${pageIntro('Products', 'Electrical control panels', 'Browse nine product families across power distribution, motor control and application-specific systems.')}
-  <div class="frame catalog">
-    <div class="filters" aria-label="Filter by product group" data-filters hidden>
-      <button type="button" data-filter="all" aria-pressed="true">All products</button>
-      ${groups.map(({ id, name }) => `<button type="button" data-filter="${id}" aria-pressed="false">${name}</button>`).join('')}
+  return `${pageIntro('Products', 'Product catalog', 'Select a panel to view its configuration, applications and enquiry options.')}
+  <div class="frame catalog catalog-directory">
+    <div class="filters" role="group" aria-labelledby="category-label" data-filters hidden>
+      <strong id="category-label">Panel categories</strong>
+      <button type="button" data-filter="all" aria-pressed="true">All panels <span>${products.length}</span></button>
+      ${groups.map(({ id, name }) => `<button type="button" data-filter="${id}" aria-pressed="false">${name} <span>${products.filter(product => product.group === id).length}</span></button>`).join('')}
     </div>
+    <div class="catalog-results">
     <p class="visually-hidden" role="status" data-filter-status></p>
     ${groups.map(({ id, name, summary }) => `<section class="catalog-group" id="${id}" data-group="${id}" aria-labelledby="${id}-title">
       <div class="section-heading"><h2 id="${id}-title">${name}</h2><p>${summary}</p></div>
       <div class="product-grid">${products.filter(({ group }) => group === id).map(productCard).join('')}</div>
     </section>`).join('')}
     <p class="media-note">Product imagery is illustrative. Configurations are specified for each project.</p>
+    </div>
   </div>
   `;
 }
@@ -207,7 +211,7 @@ function productPage(product) {
         <span class="eyebrow">${group.name}</span>
         <h1>${escape(product.title)}</h1>
         <p class="lead">${escape(product.summary)}</p>
-        <div class="actions">${button('Request a quote', productQuote(product))}${button('View configuration', '#configuration', 'secondary')}</div>
+        <div class="actions">${button('Request a quote', productQuote(product))}</div>
       </div>
       <figure class="product-figure" data-source-image="${company.website}images/${manufacturerImages[product.slug]}">
         <div>${productImage(product, { priority: true })}</div>
@@ -217,6 +221,7 @@ function productPage(product) {
     </div>
   </section>
   <dialog class="image-view" aria-label="${escape(product.name)} image viewer"><header><strong>${escape(product.name)}</strong><form method="dialog"><button autofocus>Close ×</button></form></header><img alt=""><p></p></dialog>
+  <nav class="frame detail-contents" aria-label="On this product page"><span>On this page</span><a href="#configuration">Configuration</a><a href="#applications">Applications</a><a href="#documents">Documents</a></nav>
   <section class="frame product-config section-spacing" id="configuration" aria-labelledby="config-title">
     <div class="${isFlagship ? 'spec-panel spec-panel--technical' : 'spec-panel'}">
       <div class="spec-copy">
@@ -230,14 +235,12 @@ function productPage(product) {
       </figure>` : ''}
     </div>
   </section>
-  <section class="frame product-body section-spacing" aria-labelledby="application-title">
+  <section class="frame product-body section-spacing" id="applications" aria-labelledby="application-title">
     <h2 id="application-title">Applications and options</h2>
     <div class="product-body-content">${product.sections.map(([heading, text]) => `<section><h3>${escape(heading)}</h3><p>${escape(text)}</p></section>`).join('')}
-      <div class="actions">
-        <a class="text-link" href="${escape(product.source)}">Manufacturer reference</a><a class="text-link" href="/resources/">Brochures and manuals</a>
-      </div>
     </div>
   </section>
+  <section class="frame product-body section-spacing" id="documents"><h2>Documents</h2><div class="document-links"><a href="${escape(product.source)}">Manufacturer’s product reference ↗</a><a href="/resources/">Panel brochures and installation manual →</a></div></section>
   <nav class="frame panel-neighbours" aria-label="Adjacent products">
     <a href="${productPath(adjacent(-1))}"><small>← Previous panel</small>${escape(adjacent(-1).name)}</a>
     <a href="${productPath(adjacent(1))}"><small>Next panel →</small>${escape(adjacent(1).name)}</a>
@@ -266,22 +269,18 @@ function capabilitiesPage() {
 }
 
 function projectsPage() {
-  return `${pageIntro('Projects', 'Project applications', 'Samcon control panels are used in industrial facilities, infrastructure and building services.')}
-  <section class="frame project-examples" aria-labelledby="project-reference-title">
-    <div class="section-heading"><h2 id="project-reference-title">Published project references</h2><p>Selected entries from Samcon’s historical project list.</p></div>
-    <ul class="reference-list">${projectReferences.map(([name, industry]) => `<li><h3>${name}</h3><span>${industry}</span></li>`).join('')}</ul>
+  return `${pageIntro('Projects', 'Project references', 'Selected organisations and sectors from Samcon’s published project list.')}
+  <section class="frame project-records" aria-label="Selected project references">
+    <table><thead><tr><th scope="col">Organisation</th><th scope="col">Sector</th></tr></thead><tbody>${projectReferences.map(([name, industry]) => `<tr><th scope="row">${name}</th><td>${industry}</td></tr>`).join('')}</tbody></table>
     <div class="supporting-links actions"><a class="text-link" href="${company.projects}">View Samcon’s project list</a><a class="text-link" href="${company.gallery}">View completed panel photographs</a></div>
   </section>
   `;
 }
 
 function resourcesPage() {
-  return `${pageIntro('Resources', 'Brochures and technical resources', 'Find brochures and installation information from Samcon’s published document library.')}
+  return `${pageIntro('Resources', 'Document library', 'Choose a brochure for equipment selection or the manual for installation and handling.')}
   <div class="frame resource-list">
-    ${resources.map(({ title, line, url }) => `<article class="resource-row">
-      <div><h2>${escape(title)}</h2><p>${escape(line)}</p></div>
-      <a class="button button--secondary" aria-label="Open ${escape(title)} PDF" href="${escape(url)}">Open PDF</a>
-    </article>`).join('')}
+    ${['Brochures', 'Installation'].map(section => `<section class="library-group"><h2>${section}</h2><div>${resources.filter(doc => doc.section === section).map(({title,line,url}) => `<a class="library-file" href="${escape(url)}"><div><h3>${escape(title)}</h3><p>${escape(line)}</p></div><span>PDF ↗</span></a>`).join('')}</div></section>`).join('')}
     <p class="media-note">Confirm the applicable document and revision for your project with Samcon.</p>
   </div>
   `;
@@ -291,8 +290,8 @@ function aboutPage() {
   return `${pageIntro('About', 'About Samcon', 'Samcon Industrial Controls designs and manufactures electrical control panel systems in Maharashtra.')}
   <div class="frame story-layout">
     <section class="editorial-list">
-      <div><h2>Panel engineering since 1998</h2><p>Samcon works across power distribution, engineering, HVAC and process industries. Its published capabilities cover enclosure fabrication, electrical assembly, testing and after-sales support.</p></div>
-      <div id="core-values"><h2>Quality and service</h2><p>Samcon emphasises quality checks during manufacture and prompt support after delivery. Ask the team for the current documentation that applies to your panel.</p></div>
+      <div><h2>Panel engineering since 1998</h2><p>Samcon works across power distribution, engineering, HVAC and process industries.</p><a class="text-link" href="/projects/">See project references</a></div>
+      <div id="core-values"><h2>Manufacturing and quality</h2><p>Samcon fabricates enclosures, assembles panels and checks each project’s electrical configuration.</p><a class="text-link" href="/capabilities/">Explore manufacturing and testing</a></div>
       <div><h2>Corporate social responsibility</h2><p><a class="text-link" href="/about/csr/">Find Samcon’s CSR information</a></p></div>
     </section>
     <aside class="story-aside"><figure class="location-study">${studyImage(studies[2])}<figcaption>Enclosure fabrication study</figcaption></figure><h2>Manufacturing location</h2><p>${company.location}</p><a class="text-link" href="${company.contact}">View published address and contacts</a></aside>

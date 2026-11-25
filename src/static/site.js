@@ -1,6 +1,11 @@
 const header = document.querySelector('[data-header]');
 const menuToggle = document.querySelector('[data-menu-toggle]');
 const menu = document.getElementById('site-nav');
+if (header && 'ResizeObserver' in window) {
+  new ResizeObserver(() => {
+    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+  }).observe(header);
+}
 
 function setMenu(open) {
   menu.toggleAttribute('data-open', open);
@@ -94,11 +99,12 @@ if (filterControls && filterStatus) {
       const next = new URL(location.href);
       if (selection === 'all') next.searchParams.delete('group');
       else next.searchParams.set('group', selection);
-      history.replaceState(null, '', next);
+      if (next.href !== location.href) history.pushState(null, '', next);
     }
   }
 
   applyFilter(new URLSearchParams(location.search).get('group'), false);
+  window.addEventListener('popstate', () => applyFilter(new URLSearchParams(location.search).get('group'), false));
   filterControls.hidden = false;
   for (const button of filterButtons) {
     button.addEventListener('click', () => applyFilter(button.dataset.filter, true));
