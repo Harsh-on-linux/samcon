@@ -1,6 +1,11 @@
 import { company, groups, products, resources } from './catalog.mjs';
+import { readFileSync } from 'node:fs';
+
+const logoArtwork = readFileSync(new URL('./static/assets/samcon.svg', import.meta.url), 'utf8');
+const projectReferences = [['Fiat India Auto', 'Automotive manufacturing'], ['BHEL, Panipat', 'Industrial engineering'], ['BPCL, Kochi', 'Process industry']];
 
 const nav = [
+  ['Home', '/'],
   ['Products', '/products/'], ['Capabilities', '/capabilities/'], ['Projects', '/projects/'],
   ['Resources', '/resources/'], ['About', '/about/'], ['Contact', '/contact/'],
 ];
@@ -16,9 +21,9 @@ function button(label, href, style = 'primary') {
   return `<a class="button button--${style}" href="${escape(href)}">${escape(label)}</a>`;
 }
 
-function wordmark() {
+function wordmark(animate = false) {
   return `<a href="/" class="wordmark" aria-label="Samcon home">
-    <img src="/assets/samcon.svg" width="80" height="49" alt="">
+    ${animate ? logoArtwork : '<img src="/assets/samcon.svg" width="80" height="49" alt="">'}
     <span class="company-lockup">Industrial Controls<small>Private Limited</small></span>
   </a>`;
 }
@@ -26,7 +31,7 @@ function wordmark() {
 function layout({ path, title, description, content, isHome = false }) {
   const links = nav.map(([label, href]) => {
     const current = path === href ? ' aria-current="page"' : '';
-    const active = path.startsWith(href) ? ' data-active' : '';
+    const active = (href === '/' ? isHome : path.startsWith(href)) ? ' data-active' : '';
     return `<a href="${href}"${current}${active}>${label}</a>`;
   }).join('');
 
@@ -42,13 +47,19 @@ function layout({ path, title, description, content, isHome = false }) {
   <link rel="preload" href="/assets/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/site.css">
   <link rel="stylesheet" href="/grid.css">
+  ${isHome ? `<script>try {
+    if (!sessionStorage.getItem('samcon-intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('brand-intro');
+      sessionStorage.setItem('samcon-intro', 'seen');
+    }
+  } catch {}</script>` : ''}
   <script src="/site.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" data-header>
     <div class="frame header-inner">
-      ${wordmark()}
+      ${wordmark(isHome)}
       <button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" hidden data-menu-toggle>
         <span>Menu</span><span class="menu-icon" aria-hidden="true"></span>
       </button>
@@ -64,7 +75,7 @@ function layout({ path, title, description, content, isHome = false }) {
     <div class="frame footer-top">
       <div>${wordmark()}<p>Electrical control panel manufacturer<br>${company.location}</p></div>
       <nav aria-label="Footer navigation" class="footer-nav">
-        ${nav.slice(0, 5).map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}
+        ${nav.filter(([label]) => label !== 'Contact').map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}
         <a href="/about/csr/">CSR</a>
       </nav>
       <div class="footer-contact">
@@ -180,20 +191,18 @@ function homePage() {
       ${groups.map(group => `<a href="/products/?group=${group.id}">${group.name}<span aria-hidden="true">↗</span></a>`).join('')}
     </nav>
   </section>
+  <section class="frame field-section" aria-labelledby="applications-title">
+    <div class="field-heading"><h2 id="applications-title">Selected project references</h2><a class="text-link" href="/projects/">View project list</a></div>
+    <div class="field-cells">
+      ${projectReferences.map(([name, sector]) => `<article><p class="sector-label">${sector}</p><h3>${name}</h3></article>`).join('')}
+    </div>
+  </section>
   ${rangeSection()}
   <section class="frame workshop" id="manufacturing" aria-labelledby="manufacturing-title">
     <figure class="workshop-art" data-reveal>${studyImage(studies[2])}<figcaption>Enclosure fabrication study</figcaption></figure>
     <div class="workshop-copy"><h2 id="manufacturing-title">From sheet steel<br>to switchgear<span>.</span></h2>
       <p>Enclosure fabrication, busbar work, panel assembly and testing are part of Samcon’s manufacturing process.</p>
       <a class="text-link" href="/capabilities/">Explore manufacturing capabilities</a></div>
-  </section>
-  <section class="frame field-section" aria-labelledby="applications-title">
-    <div class="field-heading"><h2 id="applications-title">Applications</h2><a class="text-link" href="/projects/">Project references</a></div>
-    <div class="field-cells">
-      <article><h3>Industrial facilities</h3><p>Distribution and motor control for plants and process equipment.</p></article>
-      <article><h3>Building services</h3><p>Power and HVAC controls for commercial and institutional buildings.</p></article>
-      <article><h3>Infrastructure</h3><p>Electrical panel systems for transport, utilities and energy.</p></article>
-    </div>
   </section>
   ${quoteBand()}`;
 }
@@ -247,10 +256,12 @@ function productPage(product) {
       </div>
       <figure class="product-figure" data-source-image="${company.website}images/${manufacturerImages[product.slug]}">
         <div>${productImage(product, { priority: true })}</div>
+        <button class="image-open" type="button" data-image-open hidden>Enlarge image <span aria-hidden="true">↗</span></button>
         <figcaption>${escape(product.name)}<span>Concept render</span></figcaption>
       </figure>
     </div>
   </section>
+  <dialog class="image-view" aria-label="${escape(product.name)} image viewer"><header><strong>${escape(product.name)}</strong><form method="dialog"><button autofocus>Close ×</button></form></header><img alt=""><p></p></dialog>
   <section class="frame product-config section-spacing" id="configuration" aria-labelledby="config-title">
     <div class="${isFlagship ? 'spec-panel spec-panel--technical' : 'spec-panel'}">
       <div class="spec-copy">
@@ -301,11 +312,10 @@ function capabilitiesPage() {
 }
 
 function projectsPage() {
-  const projects = [['Fiat India Auto', 'Automotive manufacturing'], ['BHEL, Panipat', 'Industrial engineering'], ['BPCL, Kochi', 'Process industry']];
   return `${pageIntro('Projects', 'Project applications', 'Samcon control panels are used in industrial facilities, infrastructure and building services.')}
   <section class="frame project-examples" aria-labelledby="project-reference-title">
     <div class="section-heading"><h2 id="project-reference-title">Published project references</h2><p>Selected entries from Samcon’s historical project list.</p></div>
-    <ul class="reference-list">${projects.map(([name, industry]) => `<li><h3>${name}</h3><span>${industry}</span></li>`).join('')}</ul>
+    <ul class="reference-list">${projectReferences.map(([name, industry]) => `<li><h3>${name}</h3><span>${industry}</span></li>`).join('')}</ul>
     <div class="supporting-links actions"><a class="text-link" href="${company.projects}">View Samcon’s project list</a><a class="text-link" href="${company.gallery}">View completed panel photographs</a></div>
   </section>
   ${quoteBand()}`;
@@ -331,7 +341,7 @@ function aboutPage() {
       <div id="core-values"><h2>Quality and service</h2><p>Samcon emphasises quality checks during manufacture and prompt support after delivery. Ask the team for the current documentation that applies to your panel.</p></div>
       <div><h2>Corporate social responsibility</h2><p><a class="text-link" href="/about/csr/">Find Samcon’s CSR information</a></p></div>
     </section>
-    <aside class="story-aside"><h2>Manufacturing location</h2><p>${company.location}</p><a class="text-link" href="${company.contact}">View published address and contacts</a></aside>
+    <aside class="story-aside"><figure class="location-study">${studyImage(studies[2])}<figcaption>Enclosure fabrication study</figcaption></figure><h2>Manufacturing location</h2><p>${company.location}</p><a class="text-link" href="${company.contact}">View published address and contacts</a></aside>
   </div>
   ${quoteBand()}`;
 }

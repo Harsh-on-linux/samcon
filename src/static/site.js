@@ -42,6 +42,23 @@ if (directory) {
   });
 }
 if (productFigure) {
+  const viewer = document.querySelector('.image-view');
+  const open = productFigure.querySelector('[data-image-open]');
+  if (typeof viewer.showModal === 'function') {
+    open.hidden = false;
+    open.addEventListener('click', () => {
+      const original = productFigure.querySelector('div img');
+      const enlarged = viewer.querySelector('img');
+      enlarged.src = original.currentSrc || original.src;
+      enlarged.alt = original.alt;
+      viewer.querySelector('p').textContent = productFigure.querySelector('figcaption span').textContent;
+      viewer.showModal();
+    });
+    viewer.addEventListener('click', event => {
+      if (event.target === viewer) viewer.close();
+    });
+    viewer.addEventListener('close', () => open.focus({ preventScroll: true }));
+  }
   const photo = new Image();
   photo.alt = document.querySelector('.product-copy h1').textContent + ', photographed by Samcon';
   photo.addEventListener('load', () => {
@@ -161,7 +178,7 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     }
   }, { threshold: 0.05 });
 
-  const sections = '[data-reveal], .range-heading, .range-chapter, .field-cells article, .product-card, .spec-copy, .editorial-list > *, .resource-row, .quote-band-inner';
+  const sections = '[data-reveal], .feature-image, .location-study, .range-heading, .range-chapter, .field-cells article, .product-card, .spec-copy, .editorial-list > *, .resource-row, .quote-band-inner';
   document.querySelectorAll(sections).forEach(item => observer.observe(item));
 }
 
