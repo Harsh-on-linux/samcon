@@ -156,17 +156,13 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
-      entry.target.classList.remove('is-pending');
+      entry.target.classList.add('in-view');
       observer.unobserve(entry.target);
     }
-  }, { threshold: .12 });
+  }, { threshold: 0.05 });
 
-  for (const item of document.querySelectorAll('[data-reveal]')) {
-    if (item.getBoundingClientRect().top > innerHeight) {
-      item.classList.add('is-pending');
-      observer.observe(item);
-    }
-  }
+  const sections = '[data-reveal], .range-heading, .range-chapter, .field-cells article, .product-card, .spec-copy, .editorial-list > *, .resource-row, .quote-band-inner';
+  document.querySelectorAll(sections).forEach(item => observer.observe(item));
 }
 
 const enquiry = document.querySelector('[data-enquiry]');

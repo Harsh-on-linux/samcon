@@ -149,26 +149,32 @@ function rangeSection() {
 }
 
 function homePage() {
+  const coverStudies = [studies[1], studies[0], studies[2]];
   return `<section class="frame opening" aria-labelledby="home-title">
-    <div class="opening-layout">
-      <div class="opening-copy">
-        <p class="origin-line">Asangaon, Maharashtra · Est. 1998</p>
-        <h1 id="home-title">Industrial power<br>and control<span>.</span></h1>
-        <div class="opening-summary"><p>Samcon designs and builds electrical assemblies for power distribution, motor control and building services.</p>
-        <div class="hero-actions">${button('Explore products', '/products/')}<a href="/capabilities/">Our capabilities</a></div></div>
-      </div>
+    <div class="cover-heading">
+      <div><p class="origin-line">Asangaon, Maharashtra · Est. 1998</p>
+        <h1 id="home-title">Switchgear <em>&amp;</em> control<span>.</span></h1></div>
+      <div class="cover-intro"><p>Industrial electrical panels for power distribution, motor control and building services.</p>
+        <a class="cover-link" href="/products/">Explore products <span aria-hidden="true">↗</span></a></div>
+    </div>
+    <div class="cover-gallery">
       <figure class="opening-art">
         <div class="material-window" data-parallax>
-          ${studies.map((study, index) => `<div class="material-slide" data-study-caption="${study.caption}" aria-hidden="${index !== 0}">${studyImage(study, !index)}</div>`).join('')}
+          ${coverStudies.map((study, index) => `<div class="material-slide" data-study-caption="${study.caption}" aria-hidden="${index !== 0}">${studyImage(study, !index)}</div>`).join('')}
         </div>
         <figcaption class="material-controls">
-          <div class="material-label" aria-live="polite" aria-atomic="true"><small>Material study <span data-study-number>01 / 03</span></small><span data-study-name>${studies[0].caption}</span></div>
+          <div class="material-label" aria-live="polite" aria-atomic="true"><small>Material study <span data-study-number>01 / 03</span></small><span data-study-name>${coverStudies[0].caption}</span></div>
           <div class="material-switch" role="group" aria-label="Browse material studies" hidden data-study-controls>
             <button type="button" data-study-step="-1" aria-label="Previous material study"><i aria-hidden="true"></i></button>
             <button type="button" data-study-step="1" aria-label="Next material study"><i aria-hidden="true"></i></button>
           </div>
         </figcaption>
       </figure>
+      <a class="drawing-tile" href="/products/pcc-mcc/#configuration">
+        <div class="drawing-title"><small>Configuration illustration</small><strong>PCC / MCC</strong></div>
+        <img src="/assets/products/pcc-mcc-technical.webp" alt="Outline of a modular switchboard" width="1448" height="1086">
+        <div class="drawing-foot">View configuration <span aria-hidden="true">↗</span></div>
+      </a>
     </div>
     <nav class="opening-nav" aria-label="Explore Samcon">
       ${groups.map(group => `<a href="/products/?group=${group.id}">${group.name}<span aria-hidden="true">↗</span></a>`).join('')}
