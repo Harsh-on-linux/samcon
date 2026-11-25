@@ -373,6 +373,44 @@ body::before {
 .image-view header { display: flex; justify-content: space-between; align-items: center; padding: .7rem 1rem; border-bottom: 1px solid var(--rule); }
 .image-view img { width: 100%; height: min(65dvh,45rem); object-fit: contain; background: #f4f6f8; }
 .image-view p { padding: .7rem 1rem; font: .8rem/1.4 var(--mono); }
+
+.home-page { --studio: #eaeced; }
+.home-page .site-header { background: var(--studio); border: 0; }
+.home-page .header-inner { min-height: 4.35rem; }
+.home-page .header-quote .button { background: transparent; color: var(--blue); border-bottom: 1px solid currentColor; min-height: auto; padding: .45rem 0; }
+.flagship { background: var(--studio); overflow: hidden; isolation: isolate; }
+.flagship-inner { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 3rem; margin: auto; width: var(--frame); min-height: clamp(34rem,calc(100svh - 4.35rem),65rem); padding-block: clamp(2.5rem,5vh,5rem) clamp(2.25rem,6vh,5rem); }
+.flagship-copy, .flagship-actions { position: relative; z-index: 1; align-self: flex-start; }
+.flagship-family { margin-bottom: .8rem; font-size: clamp(1rem,1.4vw,1.4rem); font-weight: 500; color: var(--blue); }
+.flagship h1 { font: 400 clamp(3.5rem,5.35vw,6.5rem)/.99 Georgia, 'Times New Roman', serif; letter-spacing: -.062em; color: #132338; }
+.flagship h1 span { color: var(--red); }
+.flagship-description { max-width: 30ch; margin-top: 1.6rem; line-height: 1.5; color: #354355; }
+.flagship-assembly { position: absolute; top: 25%; left: 39%; width: 75%; mix-blend-mode: multiply; pointer-events: none; }
+.flagship-assembly img { width: 100%; height: auto; filter: contrast(1.15) brightness(1.045); }
+.flagship-actions { display: flex; align-items: flex-end; gap: clamp(1rem,2vw,2.5rem); }
+.flagship-actions a { display: flex; gap: 1rem; align-items: center; text-decoration: none; font-size: .92rem; }
+.flagship-cta { justify-content: space-between; background: var(--blue); color: white; padding: 2.4rem 1rem .85rem; min-width: 12rem; }
+.flagship-cta:hover { background: var(--blue-deep); }
+.flagship-scroll { padding-block: .85rem; color: var(--ink); }
+.flagship-scroll:hover { text-decoration: underline; text-underline-offset: .3em; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes settle-assembly { from { opacity: .55; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  .flagship-assembly img { animation: settle-assembly 740ms var(--ease) both; }
+  .flagship-copy { animation: enter-spread 480ms var(--ease) both; }
+  @supports (animation-timeline: view()) {
+    @keyframes track-assembly { to { transform: translateY(4%) scale(1.035); } }
+    .flagship { view-timeline-name: --flagship-scroll; }
+    .flagship-assembly { animation: track-assembly linear both; animation-timeline: --flagship-scroll; animation-range: exit 0% exit 100%; }
+  }
+}
+@media(max-width: 44rem) {
+  .flagship-inner { width: 100%; min-height: calc(90svh - 4.35rem); padding: 1.7rem 1.25rem 0; gap: 1.5rem; }
+  .flagship h1 { font-size: clamp(2.75rem,10.5vw,4.6rem); }
+  .flagship-description { margin-top: 1rem; max-width: 33ch; }
+  .flagship-actions { order: 1; align-items: center; flex-wrap: wrap; gap: .3rem 1rem; }
+  .flagship-cta { min-width: auto; padding: .9rem; }
+  .flagship-assembly { position: relative; order: 2; top: auto; left: 4%; width: 106%; height: clamp(13.5rem,38svh,25rem); }
+}
 @media(max-width: 44rem) {
   .wordmark svg { width: 3.7rem; }
   .page-intro, .project-examples { grid-template-columns: 1fr; }

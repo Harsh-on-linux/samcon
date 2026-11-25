@@ -55,7 +55,7 @@ function layout({ path, title, description, content, isHome = false }) {
   } catch {}</script>` : ''}
   <script src="/site.js" defer></script>
 </head>
-<body>
+<body${isHome ? ' class="home-page"' : ''}>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" data-header>
     <div class="frame header-inner">
@@ -161,13 +161,21 @@ function rangeSection() {
 
 function homePage() {
   const coverStudies = [studies[1], studies[0], studies[2]];
-  return `<section class="frame opening" aria-labelledby="home-title">
-    <div class="cover-heading">
-      <div><p class="origin-line">Asangaon, Maharashtra · Est. 1998</p>
-        <h1 id="home-title">Switchgear <em>&amp;</em> control<span>.</span></h1></div>
-      <div class="cover-intro"><p>Industrial electrical panels for power distribution, motor control and building services.</p>
-        <a class="cover-link" href="/products/">Explore products <span aria-hidden="true">↗</span></a></div>
+  return `<section class="flagship" aria-labelledby="home-title">
+    <div class="flagship-inner">
+      <div class="flagship-copy">
+        <p class="flagship-family">PCC / MCC</p>
+        <h1 id="home-title">Modular power<br>and motor control<span>.</span></h1>
+        <p class="flagship-description">Samcon builds switchboards for industrial power distribution and motor control. Each assembly is configured around your plant’s feeders and cable layout.</p>
+      </div>
+      <figure class="flagship-assembly">
+        <img src="/assets/products/pcc-mcc-1448.webp" srcset="/assets/products/pcc-mcc-720.webp 720w, /assets/products/pcc-mcc-1448.webp 1448w" sizes="(max-width: 44rem) 100vw, 74vw" width="1448" height="1086" alt="Design study of a modular switchboard with incoming power bays and stacked motor feeders" fetchpriority="high">
+      </figure>
+      <div class="flagship-actions"><a class="flagship-cta" href="/products/pcc-mcc/">Explore PCC / MCC <span aria-hidden="true">→</span></a>
+        <a class="flagship-scroll" href="#equipment-studies">Discover the range <span aria-hidden="true">↓</span></a></div>
     </div>
+  </section>
+  <section class="frame opening" id="equipment-studies" aria-label="Panel range and design studies">
     <div class="cover-gallery">
       <figure class="opening-art">
         <div class="material-window" data-parallax>

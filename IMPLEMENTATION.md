@@ -38,6 +38,8 @@ Use **Products, Capabilities, Projects, Resources, About, Contact** in the heade
 
 ## Art direction
 
+The homepage opens with the PCC/MCC assembly on a continuous pale studio background. The family name and display headline sit at the upper left, with a square cobalt product link and a second link to the equipment studies. On phones the actions precede the assembly. The product settles into view and moves slightly on native scroll in supporting browsers. Reduced motion keeps it still. The material gallery, technical drawing and ruled catalog follow this opening. Use the supplied Atlas screenshot for composition and Samcon’s palette for identity. [Vaonis Atlas reference](https://vaonis.com/pages/product/atlas)
+
 Use the white industrial editorial reference (image 3) for oversized type, asymmetrical image-and-copy layouts, generous whitespace, and disciplined grids. Use the dark technical detail reference (image 4) for thin rules, compact specification labels, and an engineering-style product view. Translate those choices to Samcon's cabinet hardware. Keep the technical canvas contained inside the white page and give product imagery room to show enclosure seams, locks, meters, and feeder compartments. Use the approved Samcon logo.
 
 The later skh.design reference sets the structure for the implemented layout. Thin rules align the header, image captions, product index and workshop spread. The desktop header pairs the local SVG redraw with a separate company descriptor and a blue quote action. The logo follows the stripe, lettering and blue block arrangement documented in the [Samcon brochure](https://www.sme.in/samconicpl/pdf/Samcon_TTA_Brochure.pdf). The redraw and selected colors await comparison with original vector artwork.
