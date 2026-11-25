@@ -6,9 +6,9 @@ const projectReferences = [['Fiat India Auto', 'Automotive manufacturing'], ['BH
 
 const nav = [
   ['Home', '/'],
-  ['Products', '/products/'], ['Capabilities', '/capabilities/'], ['Projects', '/projects/'],
-  ['Resources', '/resources/'], ['About', '/about/'], ['Contact', '/contact/'],
+  ['Products', '/products/'], ['Company', '/about/'], ['Resources', '/resources/'],
 ];
+const companyNav = [['Overview', '/about/'], ['Manufacturing', '/capabilities/'], ['Projects', '/projects/'], ['CSR', '/about/csr/']];
 
 const quote = '/contact/#enquiry';
 const productPath = ({ slug }) => `/products/${slug}/`;
@@ -29,9 +29,12 @@ function wordmark(animate = false) {
 }
 
 function layout({ path, title, description, content, isHome = false }) {
+  const inCompany = companyNav.some(([, href]) => href === path);
+  const panel = products.find(item => productPath(item) === path);
+  const enquiryLink = panel ? productQuote(panel) : quote;
   const links = nav.map(([label, href]) => {
     const current = path === href ? ' aria-current="page"' : '';
-    const active = (href === '/' ? isHome : path.startsWith(href)) ? ' data-active' : '';
+    const active = (href === '/' ? isHome : href === '/about/' ? inCompany : path.startsWith(href)) ? ' data-active' : '';
     return `<a href="${href}"${current}${active}>${label}</a>`;
   }).join('');
 
@@ -65,17 +68,17 @@ function layout({ path, title, description, content, isHome = false }) {
       </button>
       <nav id="site-nav" class="site-nav" aria-label="Main navigation">
         ${links}
-        <div class="menu-quote">${button('Request a quote', quote)}</div>
+        <div class="menu-quote">${button('Request a quote', enquiryLink)}</div>
       </nav>
-      <div class="header-quote">${button('Request a quote', quote)}</div>
+      <div class="header-quote">${button('Request a quote', enquiryLink)}</div>
     </div>
   </header>
-  <main id="main">${content}</main>
+  <main id="main">${inCompany ? `<nav class="frame company-nav" aria-label="Company"><span>Company</span>${companyNav.map(([label, href]) => `<a href="${href}"${path === href ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>` : ''}${content}</main>
   <footer class="site-footer">
     <div class="frame footer-top">
       <div>${wordmark()}<p>Electrical control panel manufacturer<br>${company.location}</p></div>
       <nav aria-label="Footer navigation" class="footer-nav">
-        ${nav.filter(([label]) => label !== 'Contact').map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}
+        ${[['Products','/products/'], ['Manufacturing','/capabilities/'], ['Projects','/projects/'], ['Resources','/resources/'], ['About Samcon','/about/']].map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}
         <a href="/about/csr/">CSR</a>
       </nav>
       <div class="footer-contact">
@@ -118,19 +121,9 @@ function breadcrumb(links, page) {
 
 function pageIntro(name, title, description, links = []) {
   return `<section class="frame page-intro">
-    ${breadcrumb(links, name)}
+    ${links.length ? breadcrumb(links, name) : ''}
     <h1>${escape(title)}</h1>
     <p class="lead">${escape(description)}</p>
-  </section>`;
-}
-
-function quoteBand(href = quote) {
-  return `<section class="quote-band frame" aria-labelledby="quote-title">
-    <div class="quote-band-inner">
-      <div><h2 id="quote-title">Discuss your project</h2>
-        <p>Tell us which panels you need and how they’ll be used.</p></div>
-      ${button('Request a quote', href, 'on-blue')}
-    </div>
   </section>`;
 }
 
@@ -144,60 +137,23 @@ function studyImage(study, priority = false) {
   return `<img src="/assets/studies/${study.file}.webp" alt="${study.alt}" decoding="async" ${priority ? 'fetchpriority="high"' : 'loading="lazy"'}>`;
 }
 
-function rangeSection() {
-  return `<section class="frame range-section" id="panel-range" aria-labelledby="range-heading">
-    <div class="range-heading"><h2 id="range-heading">Panel range<span>.</span></h2><a class="text-link" href="/products/">Browse catalog</a></div>
-    <div class="range-body">
-      <figure class="range-study">
-        <div class="study-stack">${studies.map((study, index) => `<div data-range-art="${index}" ${index ? 'aria-hidden="true"' : ''}>${studyImage(study)}</div>`).join('')}</div>
-        <figcaption><span data-range-caption>${studies[0].caption}</span><span>Design study</span></figcaption>
-      </figure>
-      <div class="range-list">${groups.map((group, index) => `<section class="range-chapter" data-chapter="${index}" data-caption="${studies[index].caption}">
-        <h3>${group.name}</h3><ul>${products.filter((product) => product.group === group.id).map((product) => `<li><a href="${productPath(product)}">${escape(product.name)}</a></li>`).join('')}</ul>
-      </section>`).join('')}</div>
-    </div>
-  </section>`;
-}
-
 function homePage() {
-  const coverStudies = [studies[1], studies[0], studies[2]];
   return `<section class="flagship" aria-labelledby="home-title">
     <div class="flagship-inner">
       <div class="flagship-copy">
         <p class="flagship-family">PCC / MCC</p>
         <h1 id="home-title">Modular power<br>and motor control<span>.</span></h1>
-        <p class="flagship-description">Samcon builds switchboards for industrial power distribution and motor control. Each assembly is configured around your plant’s feeders and cable layout.</p>
+        <p class="flagship-description">Switchboards designed around your plant’s power distribution, motor feeders and cable layout.</p>
       </div>
       <figure class="flagship-assembly">
         <img src="/assets/products/pcc-mcc-1448.webp" srcset="/assets/products/pcc-mcc-720.webp 720w, /assets/products/pcc-mcc-1448.webp 1448w" sizes="(max-width: 44rem) 100vw, 74vw" width="1448" height="1086" alt="Design study of a modular switchboard with incoming power bays and stacked motor feeders" fetchpriority="high">
       </figure>
-      <div class="flagship-actions"><a class="flagship-cta" href="/products/pcc-mcc/">Explore PCC / MCC <span aria-hidden="true">→</span></a>
-        <a class="flagship-scroll" href="#equipment-studies">Discover the range <span aria-hidden="true">↓</span></a></div>
+      <div class="flagship-actions"><a class="flagship-cta" href="/products/pcc-mcc/">Explore PCC / MCC <span aria-hidden="true">→</span></a></div>
     </div>
   </section>
-  <section class="frame opening" id="equipment-studies" aria-label="Panel range and design studies">
-    <div class="cover-gallery">
-      <figure class="opening-art">
-        <div class="material-window" data-parallax>
-          ${coverStudies.map((study, index) => `<div class="material-slide" data-study-caption="${study.caption}" aria-hidden="${index !== 0}">${studyImage(study, !index)}</div>`).join('')}
-        </div>
-        <figcaption class="material-controls">
-          <div class="material-label" aria-live="polite" aria-atomic="true"><small>Material study <span data-study-number>01 / 03</span></small><span data-study-name>${coverStudies[0].caption}</span></div>
-          <div class="material-switch" role="group" aria-label="Browse material studies" hidden data-study-controls>
-            <button type="button" data-study-step="-1" aria-label="Previous material study"><i aria-hidden="true"></i></button>
-            <button type="button" data-study-step="1" aria-label="Next material study"><i aria-hidden="true"></i></button>
-          </div>
-        </figcaption>
-      </figure>
-      <a class="drawing-tile" href="/products/pcc-mcc/#configuration">
-        <div class="drawing-title"><small>Configuration illustration</small><strong>PCC / MCC</strong></div>
-        <img src="/assets/products/pcc-mcc-technical.webp" alt="Outline of a modular switchboard" width="1448" height="1086">
-        <div class="drawing-foot">View configuration <span aria-hidden="true">↗</span></div>
-      </a>
-    </div>
-    <nav class="opening-nav" aria-label="Explore Samcon">
-      ${groups.map(group => `<a href="/products/?group=${group.id}">${group.name}<span aria-hidden="true">↗</span></a>`).join('')}
-    </nav>
+  <section class="frame home-range" id="panel-range" aria-labelledby="range-heading">
+    <div id="equipment-studies"><h2 id="range-heading">Find a panel</h2><a class="text-link" href="/products/">View all products</a></div>
+    <ul>${groups.map(group => `<li><a href="/products/?group=${group.id}"><div><h3>${group.name}</h3><p>${group.summary}</p></div><span aria-hidden="true">→</span></a></li>`).join('')}</ul>
   </section>
   <section class="frame field-section" aria-labelledby="applications-title">
     <div class="field-heading"><h2 id="applications-title">Selected project references</h2><a class="text-link" href="/projects/">View project list</a></div>
@@ -205,14 +161,7 @@ function homePage() {
       ${projectReferences.map(([name, sector]) => `<article><p class="sector-label">${sector}</p><h3>${name}</h3></article>`).join('')}
     </div>
   </section>
-  ${rangeSection()}
-  <section class="frame workshop" id="manufacturing" aria-labelledby="manufacturing-title">
-    <figure class="workshop-art" data-reveal>${studyImage(studies[2])}<figcaption>Enclosure fabrication study</figcaption></figure>
-    <div class="workshop-copy"><h2 id="manufacturing-title">From sheet steel<br>to switchgear<span>.</span></h2>
-      <p>Enclosure fabrication, busbar work, panel assembly and testing are part of Samcon’s manufacturing process.</p>
-      <a class="text-link" href="/capabilities/">Explore manufacturing capabilities</a></div>
-  </section>
-  ${quoteBand()}`;
+  `;
 }
 
 function catalogPage() {
@@ -229,7 +178,7 @@ function catalogPage() {
     </section>`).join('')}
     <p class="media-note">Product imagery is illustrative. Configurations are specified for each project.</p>
   </div>
-  ${quoteBand()}`;
+  `;
 }
 
 const manufacturerImages = {
@@ -246,18 +195,16 @@ function productPage(product) {
   const ordered = groups.flatMap(group => products.filter(item => item.group === group.id));
   const index = ordered.indexOf(product);
   const adjacent = step => ordered[(index + step + ordered.length) % ordered.length];
-  const related = products.filter(({ group: id, slug }) => id === group.id && slug !== product.slug).slice(0, 2);
   return `<section class="frame product-top">
-    ${breadcrumb([['Products', '/products/']], product.name)}
+    <div class="panel-tools">${breadcrumb([['Products', '/products/']], product.name)}
     <nav class="panel-browser" aria-label="Product navigation">
-      <details><summary>Browse all panels <span aria-hidden="true">⌄</span></summary>
+      <details><summary>Switch panel <span aria-hidden="true">⌄</span></summary>
         <div class="panel-directory">${groups.map(group => `<div><strong>${group.name}</strong>${ordered.filter(item => item.group === group.id).map(item => `<a href="${productPath(item)}" ${item === product ? 'aria-current="page"' : ''}>${escape(item.name)}</a>`).join('')}</div>`).join('')}</div>
       </details>
-      <div class="panel-paging"><a href="${productPath(adjacent(-1))}" aria-label="Previous panel: ${escape(adjacent(-1).name)}">← Previous</a><span>${index + 1} / ${ordered.length}</span><a href="${productPath(adjacent(1))}" aria-label="Next panel: ${escape(adjacent(1).name)}">Next →</a></div>
-    </nav>
+    </nav></div>
     <div class="product-intro">
       <div class="product-copy">
-        <a class="eyebrow text-link" href="/products/?group=${group.id}">${group.name}</a>
+        <span class="eyebrow">${group.name}</span>
         <h1>${escape(product.title)}</h1>
         <p class="lead">${escape(product.summary)}</p>
         <div class="actions">${button('Request a quote', productQuote(product))}${button('View configuration', '#configuration', 'secondary')}</div>
@@ -291,11 +238,10 @@ function productPage(product) {
       </div>
     </div>
   </section>
-  <section class="frame related section-spacing" aria-labelledby="related-title">
-    <div class="section-heading section-heading--action"><h2 id="related-title">Related panels</h2><a class="text-link" href="/products/">All products</a></div>
-    <div class="product-grid product-grid--related">${related.map(productCard).join('')}</div>
-  </section>
-  ${quoteBand(productQuote(product))}`;
+  <nav class="frame panel-neighbours" aria-label="Adjacent products">
+    <a href="${productPath(adjacent(-1))}"><small>← Previous panel</small>${escape(adjacent(-1).name)}</a>
+    <a href="${productPath(adjacent(1))}"><small>Next panel →</small>${escape(adjacent(1).name)}</a>
+  </nav>`;
 }
 
 function capabilitiesPage() {
@@ -316,7 +262,7 @@ function capabilitiesPage() {
     <a class="text-link" href="https://www.sme.in/samconicpl/Electrical_Manufacturing.html">Published equipment list</a>
     <a class="text-link" href="${company.gallery}">Samcon’s panel gallery</a>
   </div>
-  ${quoteBand()}`;
+  `;
 }
 
 function projectsPage() {
@@ -326,7 +272,7 @@ function projectsPage() {
     <ul class="reference-list">${projectReferences.map(([name, industry]) => `<li><h3>${name}</h3><span>${industry}</span></li>`).join('')}</ul>
     <div class="supporting-links actions"><a class="text-link" href="${company.projects}">View Samcon’s project list</a><a class="text-link" href="${company.gallery}">View completed panel photographs</a></div>
   </section>
-  ${quoteBand()}`;
+  `;
 }
 
 function resourcesPage() {
@@ -338,7 +284,7 @@ function resourcesPage() {
     </article>`).join('')}
     <p class="media-note">Confirm the applicable document and revision for your project with Samcon.</p>
   </div>
-  ${quoteBand()}`;
+  `;
 }
 
 function aboutPage() {
@@ -351,7 +297,7 @@ function aboutPage() {
     </section>
     <aside class="story-aside"><figure class="location-study">${studyImage(studies[2])}<figcaption>Enclosure fabrication study</figcaption></figure><h2>Manufacturing location</h2><p>${company.location}</p><a class="text-link" href="${company.contact}">View published address and contacts</a></aside>
   </div>
-  ${quoteBand()}`;
+  `;
 }
 
 function csrPage() {
