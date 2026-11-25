@@ -121,10 +121,13 @@ function breadcrumb(links, page) {
 }
 
 function pageIntro(name, title, description, links = []) {
+  const plate = ({ Products: 'busbar-study', Capabilities: 'fabrication-study', Projects: 'drawout-study',
+    Resources: 'drawout-study', About: 'fabrication-study', Contact: 'busbar-study' })[name];
   return `<section class="frame page-intro">
     ${links.length ? breadcrumb(links, name) : ''}
     <h1>${escape(title)}</h1>
     <p class="lead">${escape(description)}</p>
+    ${plate ? `<div class="intro-plate" aria-hidden="true"><img src="/assets/studies/${plate}.webp" alt=""></div>` : ''}
   </section>`;
 }
 
@@ -142,19 +145,27 @@ function homePage() {
   return `<section class="flagship" aria-labelledby="home-title">
     <div class="flagship-inner">
       <div class="flagship-copy">
-        <p class="flagship-family">PCC / MCC</p>
-        <h1 id="home-title">Modular power<br>and motor control<span>.</span></h1>
-        <p class="flagship-description">Switchboards designed around your plant’s power distribution, motor feeders and cable layout.</p>
+        <p class="instrument-kicker">Industrial switchgear</p>
+        <h1 id="home-title">Power <em>&amp;</em><br>motor control<span>.</span></h1>
+        <p class="flagship-description">Modular switchboards built around your plant’s power supply, motor feeders and cable layout.</p>
+        <a class="studio-action" href="/products/pcc-mcc/">Explore PCC / MCC <span aria-hidden="true">↗</span></a>
       </div>
-      <figure class="flagship-assembly">
-        <img src="/assets/products/pcc-mcc-1448.webp" srcset="/assets/products/pcc-mcc-720.webp 720w, /assets/products/pcc-mcc-1448.webp 1448w" sizes="(max-width: 44rem) 100vw, 74vw" width="1448" height="1086" alt="Design study of a modular switchboard with incoming power bays and stacked motor feeders" fetchpriority="high">
-      </figure>
-      <div class="flagship-actions"><a class="flagship-cta" href="/products/pcc-mcc/">Explore PCC / MCC <span aria-hidden="true">→</span></a></div>
+      <div class="assembly-studio">
+        <div class="studio-controls"><span>Assembly study</span><fieldset><legend class="visually-hidden">Switchboard view</legend>
+          <label><input type="radio" name="studio-view" value="technical" checked>Technical</label>
+          <label><input type="radio" name="studio-view" value="exterior">Exterior</label>
+        </fieldset></div>
+        <div class="studio-stage">
+          <img class="technical-view" src="/assets/products/pcc-mcc-technical.webp" width="1448" height="1086" alt="Technical illustration of a multi-bay switchboard" fetchpriority="high">
+          <img class="exterior-view" src="/assets/products/pcc-mcc-1448.webp" width="1448" height="1086" alt="Exterior concept showing the incoming power bays and motor feeders">
+        </div>
+        <div class="studio-caption"><span>PCC / MCC</span><span>Modular switchboard</span></div>
+      </div>
     </div>
   </section>
   <section class="frame home-range" id="panel-range" aria-labelledby="range-heading">
     <div id="equipment-studies"><h2 id="range-heading">Find a panel</h2><a class="text-link" href="/products/">View all products</a></div>
-    <ul>${groups.map(group => `<li><a href="/products/?group=${group.id}"><div><h3>${group.name}</h3><p>${group.summary}</p></div><span aria-hidden="true">→</span></a></li>`).join('')}</ul>
+    <ul>${groups.map((group, index) => `<li><a href="/products/?group=${group.id}"><div class="range-picture">${studyImage(studies[index])}</div><div class="range-info"><h3>${group.name}</h3><p>${group.summary}</p></div><span aria-hidden="true">↗</span></a></li>`).join('')}</ul>
   </section>
   <section class="frame field-section" aria-labelledby="applications-title">
     <div class="field-heading"><h2 id="applications-title">Selected project references</h2><a class="text-link" href="/projects/">View project list</a></div>

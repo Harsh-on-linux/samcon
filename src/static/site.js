@@ -120,7 +120,7 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     }
   }, { threshold: 0.05 });
 
-  const sections = '[data-reveal], .feature-image, .location-study, .range-heading, .range-chapter, .field-cells article, .product-card, .spec-copy, .editorial-list > *, .resource-row, .quote-band-inner';
+  const sections = '[data-reveal], .feature-image, .location-study, .home-range li, .field-cells article, .product-card, .spec-copy, .editorial-list > *, .resource-row, .quote-band-inner';
   document.querySelectorAll(sections).forEach(item => observer.observe(item));
 }
 

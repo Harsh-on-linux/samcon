@@ -38,7 +38,7 @@ Use **Products, Capabilities, Projects, Resources, About, Contact** in the heade
 
 ## Art direction
 
-The homepage opens with the PCC/MCC assembly on a continuous pale studio background. The family name and display headline sit at the upper left, with a square cobalt product link and a second link to the equipment studies. On phones the actions precede the assembly. The product settles into view and moves slightly on native scroll in supporting browsers. Reduced motion keeps it still. The material gallery, technical drawing and ruled catalog follow this opening. Use the supplied Atlas screenshot for composition and Samcon’s palette for identity. [Vaonis Atlas reference](https://vaonis.com/pages/product/atlas)
+The homepage pairs a white editorial introduction with a dark, gridded PCC/MCC assembly study. Visitors choose a technical illustration or an exterior render. The study settles into place on entry and the view fades when selected. Reduced motion shows the selected image immediately.
 
 Use the white industrial editorial reference (image 3) for oversized type, asymmetrical image-and-copy layouts, generous whitespace, and disciplined grids. Use the dark technical detail reference (image 4) for thin rules, compact specification labels, and an engineering-style product view. Translate those choices to Samcon's cabinet hardware. Keep the technical canvas contained inside the white page and give product imagery room to show enclosure seams, locks, meters, and feeder compartments. Use the approved Samcon logo.
 
@@ -70,8 +70,8 @@ Set the desktop hero to roughly 64–80 px at 600–650 weight and mobile to 36�
 
 ### Page compositions
 
-- **Home.** Pair the headline with a full-bleed copper busbar detail in a 55/45 split. Visitors can use the image controls to inspect two more generated studies, a withdrawable feeder and a folded steel enclosure. Present the nine products in a ruled index, followed by fabrication, applications and the enquiry action. Label generated images as studies.
-- **Catalog.** Give every product an illustrated card within its group. On each product detail page offer a grouped directory and previous and next links above the overview. Each row links to a product detail. An individual product page shows Samcon's corresponding photograph when available and a labelled local concept as its fallback. [Samcon product gallery](https://www.samconcontrolpanel.com/gallery-control-panels.php)
+- **Home.** Lead with the interactive switchboard and one product link. Use three illustrated category links and a short project reference section below.
+- **Catalog.** Show compact illustrated rows beside the category filters. Each product detail has a panel switcher, section links and adjacent products at the end.
 - **Product detail.** Open with the product name, summary, quote action, gallery, and a compact summary of approved key specs. Follow with applications, options, a full specification list or table, related brochure, and relevant projects. Where source material supports it, add a contained dark technical view with a line drawing or orthographic render. Place the dimensions and labels in accessible page content next to the image.
 - **Capabilities, projects, and resources.** Alternate clear text columns with wide facility and installation photographs. Give projects an application, supplied equipment, and verified scope. Group resources by document type and show the version or date next to the download link when available.
 - **Responsive layout.** Align sections to common outer rules up to 1,536 px wide. On narrow phones, stack the introduction, image, controls and product index in reading order. Give the image controls at least 44 px of touch space. Review at 320 px, 390 px, 768 px and 1,440 px.
