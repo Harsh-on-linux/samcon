@@ -5,8 +5,8 @@ const logoArtwork = readFileSync(new URL('./static/assets/samcon.svg', import.me
 const projectReferences = [['Fiat India Auto', 'Automotive manufacturing'], ['BHEL, Panipat', 'Industrial engineering'], ['BPCL, Kochi', 'Process industry']];
 
 const nav = [
-  ['Home', '/'],
-  ['Products', '/products/'], ['Company', '/about/'], ['Resources', '/resources/'],
+  ['Products', '/products/'], ['Manufacturing', '/capabilities/'],
+  ['Company', '/about/'], ['Resources', '/resources/'],
 ];
 const companyNav = [['Overview', '/about/'], ['Manufacturing', '/capabilities/'], ['Projects', '/projects/'], ['CSR', '/about/csr/']];
 
@@ -47,9 +47,9 @@ function layout({ path, title, description, content, isHome = false }) {
   <meta name="theme-color" content="#ffffff">
   <title>${escape(isHome ? title : `${title} | Samcon`)}</title>
   <link rel="icon" href="/assets/samcon.svg" type="image/svg+xml">
-  <link rel="preload" href="/assets/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/practive-semibold.otf" as="font" type="font/otf" crossorigin>
   <link rel="stylesheet" href="/site.css">
-  <link rel="stylesheet" href="/grid.css">
+  <link rel="stylesheet" href="/intro.css">
   <script>
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
       let playIntro = performance.getEntriesByType('navigation')[0]?.type === 'reload';
@@ -73,25 +73,23 @@ function layout({ path, title, description, content, isHome = false }) {
       </button>
       <nav id="site-nav" class="site-nav" aria-label="Main navigation">
         ${links}
-        <div class="menu-quote">${button('Request a quote', enquiryLink)}</div>
+        <div class="menu-quote">${button('Discuss a project', enquiryLink)}</div>
       </nav>
-      <div class="header-quote">${button('Request a quote', enquiryLink)}</div>
+      <a class="header-quote" href="${enquiryLink}">Discuss a project</a>
     </div>
   </header>
   <main id="main">${inCompany ? `<nav class="frame company-nav" aria-label="Company"><span>Company</span>${companyNav.map(([label, href]) => `<a href="${href}"${path === href ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>` : ''}${content}</main>
-  <footer class="site-footer">
-    <div class="frame footer-top">
-      <div>${wordmark()}<p>Electrical control panel manufacturer<br>${company.location}</p></div>
+  <footer class="site-footer" id="footer" data-typewriter>
+    <div class="frame footer-grid">
+      <div class="footer-identity"><p>Samcon Industrial Controls<br>Private Limited</p><p class="footer-caption">Electrical panel engineering<br>Since 1998</p></div>
+      <div class="footer-location"><p class="footer-label">Manufacturing</p><p>Asangaon, Maharashtra<br>India</p><a href="${company.contact}">Address &amp; phone details</a></div>
       <nav aria-label="Footer navigation" class="footer-nav">
-        ${[['Products','/products/'], ['Manufacturing','/capabilities/'], ['Projects','/projects/'], ['Resources','/resources/'], ['About Samcon','/about/']].map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}
-        <a href="/about/csr/">CSR</a>
+        ${[['Products','/products/'], ['Manufacturing','/capabilities/'], ['Projects','/projects/'], ['Resources','/resources/'], ['Company','/about/'], ['CSR','/about/csr/']].map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}
       </nav>
-      <div class="footer-contact">
-        <a href="/contact/">Contact Samcon</a>
-        <a class="text-link" href="mailto:${company.email}">${company.email}</a>
-      </div>
+      <a class="footer-brand" href="/" aria-label="Samcon home">SAMCON</a>
+      <div class="footer-contact"><p class="footer-label">Let’s talk power</p><a class="footer-email" href="mailto:${company.email}">${company.email}</a>${path !== '/contact/' ? `<a class="footer-enquiry" href="${enquiryLink}">Discuss your project</a>` : '<a class="footer-enquiry" href="#enquiry">Prepare your enquiry</a>'}</div>
+      <div class="footer-bottom"><span>${company.name}</span><a href="#top">Back to top</a></div>
     </div>
-    <div class="frame footer-bottom">${company.name}<a href="#top">Back to top ↑</a></div>
   </footer>
 </body>
 </html>`;
@@ -106,14 +104,13 @@ function productImage(product, { priority = false, sizes = '(min-width: 75rem) 3
 }
 
 function productCard(product) {
-  return `<article class="product-card">
+  return `<article class="product-card" data-typewriter>
     <a href="${productPath(product)}">
-      <div class="card-equipment">${productImage(product, { sizes: '112px' })}</div>
+      <div class="card-equipment">${productImage(product, { sizes: '(min-width: 110rem) 776px, (min-width: 38rem) 45vw, 92vw' })}</div>
       <div class="product-card-content">
         <h3>${escape(product.title)}</h3>
         <p>${escape(product.summary)}</p>
       </div>
-      <span class="row-arrow" aria-hidden="true">→</span>
     </a>
   </article>`;
 }
@@ -126,13 +123,11 @@ function breadcrumb(links, page) {
 }
 
 function pageIntro(name, title, description, links = []) {
-  const plate = ({ Products: 'busbar-study', Capabilities: 'fabrication-study', Projects: 'drawout-study',
-    Resources: 'drawout-study', About: 'fabrication-study', Contact: 'busbar-study' })[name];
-  return `<section class="frame page-intro">
+  return `<section class="frame page-intro" data-typewriter>
     ${links.length ? breadcrumb(links, name) : ''}
+    <p class="eyebrow">${escape(name === 'Capabilities' ? 'Manufacturing' : name === 'About' ? 'The company' : name)}</p>
     <h1>${escape(title)}</h1>
     <p class="lead">${escape(description)}</p>
-    ${plate ? `<div class="intro-plate" aria-hidden="true"><img src="/assets/studies/${plate}.webp" alt=""></div>` : ''}
   </section>`;
 }
 
@@ -147,52 +142,32 @@ function studyImage(study, priority = false) {
 }
 
 function homePage() {
-  return `<section class="flagship" aria-labelledby="home-title">
-    <div class="flagship-inner">
-      <div class="flagship-copy">
-        <p class="instrument-kicker">Industrial switchgear</p>
-        <h1 id="home-title">Power <em>&amp;</em><br>motor control<span>.</span></h1>
-        <p class="flagship-description">Modular switchboards built around your plant’s power supply, motor feeders and cable layout.</p>
-        <a class="studio-action" href="/products/pcc-mcc/">Explore PCC / MCC <span aria-hidden="true">↗</span></a>
-      </div>
-      <div class="assembly-studio">
-        <div class="studio-controls"><span>Assembly study</span><fieldset><legend class="visually-hidden">Switchboard view</legend>
-          <label><input type="radio" name="studio-view" value="technical" checked>Technical</label>
-          <label><input type="radio" name="studio-view" value="exterior">Exterior</label>
-        </fieldset></div>
-        <div class="studio-stage">
-          <img class="technical-view" src="/assets/products/pcc-mcc-technical.webp" width="1448" height="1086" alt="Technical illustration of a multi-bay switchboard" fetchpriority="high">
-          <img class="exterior-view" src="/assets/products/pcc-mcc-1448.webp" width="1448" height="1086" alt="Exterior concept showing the incoming power bays and motor feeders">
-        </div>
-        <div class="studio-caption"><span>PCC / MCC</span><span>Modular switchboard</span></div>
-      </div>
-    </div>
+  return `<section class="frame landing" data-typewriter aria-labelledby="home-title">
+    <div class="landing-meta"><p class="eyebrow">Electrical control panels</p><p>Engineering since 1998</p></div>
+    <h1 id="home-title"><span class="accent">Power.</span><br>Under control.</h1>
+    <div class="landing-summary"><a class="text-link action-link" href="/products/">Explore our panels</a><p>From incoming power to the last motor feeder. Electrical panel systems engineered around your application, built in Asangaon, India.</p></div>
+    <figure class="landing-equipment"><a href="/products/pcc-mcc/" aria-label="Explore power and motor control centres">${productImage(products[0], {priority: true})}</a><figcaption><span>PCC / MCC</span><span>Power distribution &amp; motor control</span><span>Illustrative configuration</span></figcaption></figure>
   </section>
-  <section class="frame home-range" id="panel-range" aria-labelledby="range-heading">
-    <div id="equipment-studies"><h2 id="range-heading">Find a panel</h2><a class="text-link" href="/products/">View all products</a></div>
-    <ul>${groups.map((group, index) => `<li><a href="/products/?group=${group.id}"><div class="range-picture">${studyImage(studies[index])}</div><div class="range-info"><h3>${group.name}</h3><p>${group.summary}</p></div><span aria-hidden="true">↗</span></a></li>`).join('')}</ul>
+  <section class="frame panel-range section-spacing" id="panel-range" aria-labelledby="range-heading">
+    <div class="section-heading section-heading--split" data-typewriter><div><p class="eyebrow">The panel range</p><h2 id="range-heading">Built around<br>your application.</h2></div><p class="lead">Nine panel families. One place to find the right starting point for your power and control requirements.</p></div>
+    <div class="range-directory">${groups.map(group => `<section class="range-row" data-typewriter><h3><a href="/products/?group=${group.id}">${group.name}</a></h3><p>${group.summary}</p><ul>${products.filter(product => product.group === group.id).map(product => `<li><a href="${productPath(product)}">${escape(product.name)}</a></li>`).join('')}</ul></section>`).join('')}</div>
   </section>
-  <section class="frame field-section" aria-labelledby="applications-title">
-    <div class="field-heading"><h2 id="applications-title">Selected project references</h2><a class="text-link" href="/projects/">View project list</a></div>
-    <div class="field-cells">
-      ${projectReferences.map(([name, sector]) => `<article><p class="sector-label">${sector}</p><h3>${name}</h3></article>`).join('')}
-    </div>
-  </section>
-  `;
+  <section class="manufacturing-band section-spacing" aria-labelledby="manufacturing-title"><div class="frame manufacturing-inner"><div data-typewriter><p class="eyebrow">Made at Samcon</p><h2 id="manufacturing-title">Considered.<br>Inside and out.</h2><a class="text-link" href="/capabilities/">Our manufacturing process</a></div><div class="process-list"><section data-typewriter><h3>Enclosure</h3><p>CNC sheet metal fabrication shapes the panel around its layout, installation and service access.</p></section><section data-typewriter><h3>Assembly</h3><p>Busbars, switchgear and motor feeders come together around the electrical design.</p></section><section data-typewriter><h3>Testing</h3><p>Dimensional, functional and insulation checks support the configured assembly.</p></section></div></div></section>
+  <section class="frame home-projects section-spacing" aria-labelledby="applications-title"><div class="section-heading section-heading--split" data-typewriter><div><p class="eyebrow">Project references</p><h2 id="applications-title">Across industries.</h2></div><a class="text-link" href="/projects/">Explore project references</a></div><div class="reference-list">${projectReferences.map(([name, sector]) => `<div data-typewriter><h3>${name}</h3><p>${sector}</p></div>`).join('')}</div></section>`;
 }
 
 function catalogPage() {
-  return `${pageIntro('Products', 'Product catalog', 'Select a panel to view its configuration, applications and enquiry options.')}
+  return `${pageIntro('Products', 'The right panel.\nFor your purpose.', 'Explore power distribution, motor control and application-specific panels. Start with your application, then review the configuration.')}
   <div class="frame catalog catalog-directory">
     <div class="filters" role="group" aria-labelledby="category-label" data-filters hidden>
-      <strong id="category-label">Panel categories</strong>
+      <strong id="category-label">Browse by application</strong>
       <button type="button" data-filter="all" aria-pressed="true">All panels <span>${products.length}</span></button>
       ${groups.map(({ id, name }) => `<button type="button" data-filter="${id}" aria-pressed="false">${name} <span>${products.filter(product => product.group === id).length}</span></button>`).join('')}
     </div>
     <div class="catalog-results">
     <p class="visually-hidden" role="status" data-filter-status></p>
     ${groups.map(({ id, name, summary }) => `<section class="catalog-group" id="${id}" data-group="${id}" aria-labelledby="${id}-title">
-      <div class="section-heading"><h2 id="${id}-title">${name}</h2><p>${summary}</p></div>
+      <div class="section-heading" data-typewriter><h2 id="${id}-title">${name}</h2><p>${summary}</p></div>
       <div class="product-grid">${products.filter(({ group }) => group === id).map(productCard).join('')}</div>
     </section>`).join('')}
     <p class="media-note">Product imagery is illustrative. Configurations are specified for each project.</p>
@@ -222,24 +197,23 @@ function productPage(product) {
         <div class="panel-directory">${groups.map(group => `<div><strong>${group.name}</strong>${ordered.filter(item => item.group === group.id).map(item => `<a href="${productPath(item)}" ${item === product ? 'aria-current="page"' : ''}>${escape(item.name)}</a>`).join('')}</div>`).join('')}</div>
       </details>
     </nav></div>
-    <div class="product-intro">
-      <div class="product-copy">
+    <div class="product-copy" data-typewriter>
         <span class="eyebrow">${group.name}</span>
         <h1>${escape(product.title)}</h1>
-        <p class="lead">${escape(product.summary)}</p>
-        <div class="actions">${button('Request a quote', productQuote(product))}</div>
-      </div>
+        <div class="product-summary"><p class="lead">${escape(product.summary)}</p>${button('Discuss this panel', productQuote(product))}</div>
+    </div>
+    <div class="product-intro">
       <figure class="product-figure" data-source-image="${company.website}images/${manufacturerImages[product.slug]}">
         <div>${productImage(product, { priority: true })}</div>
-        <button class="image-open" type="button" data-image-open hidden>Enlarge image <span aria-hidden="true">↗</span></button>
+        <button class="image-open" type="button" data-image-open hidden>Enlarge image</button>
         <figcaption>${escape(product.name)}<span>Concept render</span></figcaption>
-      </figure>
+      </figure><div class="product-at-a-glance" data-typewriter><h2>At a glance</h2><dl>${product.specs.slice(0, 3).map(([term, value]) => `<div><dt>${escape(term)}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl><a class="text-link" href="#configuration">Explore the configuration</a></div>
     </div>
   </section>
   <dialog class="image-view" aria-label="${escape(product.name)} image viewer"><header><strong>${escape(product.name)}</strong><form method="dialog"><button autofocus>Close ×</button></form></header><img alt=""><p></p></dialog>
   <nav class="frame detail-contents" aria-label="On this product page"><span>On this page</span><a href="#configuration">Configuration</a><a href="#applications">Applications</a><a href="#documents">Documents</a></nav>
   <section class="frame product-config section-spacing" id="configuration" aria-labelledby="config-title">
-    <div class="${isFlagship ? 'spec-panel spec-panel--technical' : 'spec-panel'}">
+    <div data-typewriter class="${isFlagship ? 'spec-panel spec-panel--technical' : 'spec-panel'}">
       <div class="spec-copy">
         <h2 id="config-title">Configuration overview</h2>
         <dl class="spec-list">${product.specs.map(([term, value]) => `<div><dt>${escape(term)}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>
@@ -251,15 +225,15 @@ function productPage(product) {
       </figure>` : ''}
     </div>
   </section>
-  <section class="frame product-body section-spacing" id="applications" aria-labelledby="application-title">
+  <section class="frame product-body section-spacing" data-typewriter id="applications" aria-labelledby="application-title">
     <h2 id="application-title">Applications and options</h2>
     <div class="product-body-content">${product.sections.map(([heading, text]) => `<section><h3>${escape(heading)}</h3><p>${escape(text)}</p></section>`).join('')}
     </div>
   </section>
-  <section class="frame product-body section-spacing" id="documents"><h2>Documents</h2><div class="document-links"><a href="${escape(product.source)}">Manufacturer’s product reference ↗</a><a href="/resources/">Panel brochures and installation manual →</a></div></section>
+  <section class="frame product-body section-spacing" data-typewriter id="documents"><h2>Documents</h2><div class="document-links"><a class="text-link" href="${escape(product.source)}">Manufacturer’s product reference</a><a class="text-link" href="/resources/">Panel brochures and installation manual</a></div></section>
   <nav class="frame panel-neighbours" aria-label="Adjacent products">
-    <a href="${productPath(adjacent(-1))}"><small>← Previous panel</small>${escape(adjacent(-1).name)}</a>
-    <a href="${productPath(adjacent(1))}"><small>Next panel →</small>${escape(adjacent(1).name)}</a>
+    <a href="${productPath(adjacent(-1))}"><small>Previous panel</small>${escape(adjacent(-1).name)}</a>
+    <a href="${productPath(adjacent(1))}"><small>Next panel</small>${escape(adjacent(1).name)}</a>
   </nav>`;
 }
 
@@ -269,12 +243,12 @@ function capabilitiesPage() {
     ['Busbar fabrication and panel assembly', 'Samcon describes busbar punching and bending, panel finishing, and assembly. Confirm the conductor arrangement, cable entry and access for maintenance.'],
     ['Inspection and testing', 'Samcon’s PCC/MCC documentation describes dimensional, functional and insulation checks. Discuss applicable test scope and witness requirements for the configured assembly.'],
   ];
-  return `${pageIntro('Capabilities', 'Manufacturing and testing', 'Work with Samcon on the enclosure, power system layout and documentation for your electrical control panels.')}
+  return `${pageIntro('Capabilities', 'From sheet steel.\nTo switchboard.', 'Enclosure fabrication, busbar assembly and testing. A coordinated process at Asangaon, built around your project’s electrical design.')}
   <div class="frame feature-layout">
-    <div class="editorial-list">${capabilities.map(([heading, description]) => `<section><h2>${heading}</h2><p>${description}</p></section>`).join('')}</div>
+    <div class="editorial-list">${capabilities.map(([heading, description]) => `<section data-typewriter><h2>${heading}</h2><p>${description}</p></section>`).join('')}</div>
     <figure class="feature-image">
       ${studyImage(studies[2])}
-      <figcaption>Sheet metal enclosure study</figcaption>
+      <figcaption>Formed enclosure edge and mounting hardware · Material study</figcaption>
     </figure>
   </div>
   <div class="frame supporting-links actions">
@@ -285,8 +259,8 @@ function capabilitiesPage() {
 }
 
 function projectsPage() {
-  return `${pageIntro('Projects', 'Project references', 'Selected organisations and sectors from Samcon’s published project list.')}
-  <section class="frame project-records" aria-label="Selected project references">
+  return `${pageIntro('Projects', 'Powering different\npossibilities.', 'A selection of organisations across automotive manufacturing, engineering and process industries, from Samcon’s published project references.')}
+  <section class="frame project-records" data-typewriter aria-label="Selected project references">
     <table><thead><tr><th scope="col">Organisation</th><th scope="col">Sector</th></tr></thead><tbody>${projectReferences.map(([name, industry]) => `<tr><th scope="row">${name}</th><td>${industry}</td></tr>`).join('')}</tbody></table>
     <div class="supporting-links actions"><a class="text-link" href="${company.projects}">View Samcon’s project list</a><a class="text-link" href="${company.gallery}">View completed panel photographs</a></div>
   </section>
@@ -294,29 +268,29 @@ function projectsPage() {
 }
 
 function resourcesPage() {
-  return `${pageIntro('Resources', 'Document library', 'Choose a brochure for equipment selection or the manual for installation and handling.')}
+  return `${pageIntro('Resources', 'Details that\nmove projects.', 'Brochures for equipment selection. A manual for installation and handling. Find the information you need for your next step.')}
   <div class="frame resource-list">
-    ${['Brochures', 'Installation'].map(section => `<section class="library-group"><h2>${section}</h2><div>${resources.filter(doc => doc.section === section).map(({title,line,url}) => `<a class="library-file" href="${escape(url)}"><div><h3>${escape(title)}</h3><p>${escape(line)}</p></div><span>PDF ↗</span></a>`).join('')}</div></section>`).join('')}
+    ${['Brochures', 'Installation'].map(section => `<section class="library-group" data-typewriter><h2>${section}</h2><div>${resources.filter(doc => doc.section === section).map(({title,line,url}) => `<a class="library-file" href="${escape(url)}"><div><h3>${escape(title)}</h3><p>${escape(line)}</p></div><span>View PDF</span></a>`).join('')}</div></section>`).join('')}
     <p class="media-note">Confirm the applicable document and revision for your project with Samcon.</p>
   </div>
   `;
 }
 
 function aboutPage() {
-  return `${pageIntro('About', 'About Samcon', 'Samcon Industrial Controls designs and manufactures electrical control panel systems in Maharashtra.')}
+  return `${pageIntro('About', 'Engineering\nwith intent.', 'Samcon Industrial Controls. Designing and manufacturing electrical panel systems in Maharashtra since 1998.')}
   <div class="frame story-layout">
     <section class="editorial-list">
-      <div><h2>Panel engineering since 1998</h2><p>Samcon works across power distribution, engineering, HVAC and process industries.</p><a class="text-link" href="/projects/">See project references</a></div>
-      <div id="core-values"><h2>Manufacturing and quality</h2><p>Samcon fabricates enclosures, assembles panels and checks each project’s electrical configuration.</p><a class="text-link" href="/capabilities/">Explore manufacturing and testing</a></div>
-      <div><h2>Corporate social responsibility</h2><p><a class="text-link" href="/about/csr/">Find Samcon’s CSR information</a></p></div>
+      <div data-typewriter><h2>Panel engineering since 1998</h2><p>Samcon works across power distribution, engineering, HVAC and process industries.</p><a class="text-link" href="/projects/">See project references</a></div>
+      <div id="core-values" data-typewriter><h2>Manufacturing and quality</h2><p>Samcon fabricates enclosures, assembles panels and checks each project’s electrical configuration.</p><a class="text-link" href="/capabilities/">Explore manufacturing and testing</a></div>
+      <div data-typewriter><h2>Corporate social responsibility</h2><p><a class="text-link" href="/about/csr/">Find Samcon’s CSR information</a></p></div>
     </section>
-    <aside class="story-aside"><figure class="location-study">${studyImage(studies[2])}<figcaption>Enclosure fabrication study</figcaption></figure><h2>Manufacturing location</h2><p>${company.location}</p><a class="text-link" href="${company.contact}">View published address and contacts</a></aside>
+    <aside class="story-aside" data-typewriter><figure class="location-study">${studyImage(studies[2])}<figcaption>Enclosure fabrication study</figcaption></figure><h2>Manufacturing location</h2><p>${company.location}</p><a class="text-link" href="${company.contact}">View published address and contacts</a></aside>
   </div>
   `;
 }
 
 function csrPage() {
-  return `${pageIntro('CSR', 'Corporate social responsibility', 'Find Samcon’s published CSR information or contact the company for current details.', [['About', '/about/']])}
+  return `${pageIntro('CSR', 'Responsibility.\nBeyond the panel.', 'Access Samcon’s published corporate social responsibility information, or speak with the company for current details.', [['About', '/about/']])}
   <section class="frame supporting-links actions">
     <a class="button button--secondary" href="https://www.sme.in/samconicpl/CSR.html">Published CSR information</a>
     <a class="text-link" href="/contact/">Contact Samcon</a>
@@ -324,7 +298,7 @@ function csrPage() {
 }
 
 function contactPage() {
-  return `${pageIntro('Contact', 'Request a quote', 'Share the panel family, application and project requirements so Samcon can discuss the right configuration.')}
+  return `${pageIntro('Contact', 'Your project.\nLet’s begin.', 'Tell us what you’re building. Share your application and panel requirements to start a conversation with Samcon.')}
   <div class="frame contact-layout" id="enquiry">
     <div class="contact-main">
       <form class="enquiry-form" data-enquiry data-recipient="${company.email}" hidden>
@@ -340,7 +314,7 @@ function contactPage() {
           <label class="form-wide">Project requirements<textarea name="requirement" rows="5" maxlength="1500" placeholder="Application, project location, panel type and any project-specific requirements" required></textarea></label>
         </div>
         <button class="button button--primary" type="submit">Prepare enquiry</button>
-      </form>
+      </form><noscript><p>Email your project requirements to <a class="text-link" href="mailto:${company.email}">${company.email}</a>.</p></noscript>
       <section class="draft-result" data-draft hidden aria-labelledby="draft-title">
         <h2 id="draft-title" tabindex="-1">Your enquiry draft is ready</h2>
         <p>Open it in your email app, or copy the message into your own email.</p>
@@ -350,7 +324,7 @@ function contactPage() {
         <details><summary>Review message</summary><label class="visually-hidden" for="draft-message">Prepared enquiry message</label><textarea id="draft-message" rows="9" readonly data-draft-message></textarea></details>
       </section>
     </div>
-    <aside class="contact-aside">
+    <aside class="contact-aside" data-typewriter>
       <h2>Contact sales</h2>
       <p><a class="text-link" href="mailto:${company.email}">${company.email}</a></p>
       <h3>Manufacturing location</h3><p>${company.location}</p>

@@ -55,58 +55,31 @@ Use the proposed header labels in the research brief. The quote button opens Con
 | Motor control | Drawout Panels (`drawout-panels`), Intelligent Motor Control Center (`intelligent-motor-control-center`) |
 | Application-specific panels | Solar Panels (`solar-panels`), AHU Panels (`ahu-panels`), Outdoor Panels (`outdoor-panels`), DG Synchronize Panels (`dg-synchronize-panels`) |
 
-## Art direction
+## Current visual direction
 
-The homepage pairs a white editorial introduction with a dark, gridded PCC/MCC assembly study. Visitors choose a technical illustration or an exterior render. The study settles into place on entry and the view fades when selected. Reduced motion shows the selected image immediately.
+The November 2026 redesign uses a white canvas, oversized Practive display typography and open layouts. The homepage leads with “Power. Under control.” above a wide equipment view, followed by an application-based directory of all nine panel families, a manufacturing explanation and project references. Sections contain navigation, equipment information or a clear next action; there are no ornamental grids, counters, badges or continuously moving elements.
 
-Use the white industrial editorial reference (image 3) for oversized type, asymmetrical image-and-copy layouts, generous whitespace, and disciplined grids. Use the dark technical detail reference (image 4) for thin rules, compact specification labels, and an engineering-style product view. Translate those choices to Samcon's cabinet hardware. Keep the technical canvas contained inside the white page and give product imagery room to show enclosure seams, locks, meters, and feeder compartments. Use the approved Samcon logo.
+### Palette and typography
 
-The later skh.design reference sets the structure for the implemented layout. Thin rules align the header, image captions, product index and workshop spread. The desktop header pairs the local SVG redraw with a separate company descriptor and a blue quote action. The logo follows the stripe, lettering and blue block arrangement documented in the [Samcon brochure](https://www.sme.in/samconicpl/pdf/Samcon_TTA_Brochure.pdf). The redraw and selected colors await comparison with original vector artwork.
+- Logo blue `#17449b` leads the headings, manufacturing section and oversized footer wordmark. Logo red `#d62536` identifies primary enquiry actions. White `#ffffff`, equipment grey `#f0f1f3`, charcoal `#292c31` and secondary grey `#62666e` complete the palette.
+- Self-hosted Practive Semibold, weight 600, is used for display headings. Inter remains the body and interface face for readable technical content and forms.
+- The supplied Practive archive is marked personal/non-commercial use. Its original readme and licensing information are retained in `src/static/assets/fonts/`; obtain commercial permission before a public business launch.
 
-### Color and contrast
+### Page compositions and behavior
 
-The four swatches below were sampled from the supplied palette (image 2). Apply **70 / 20 / 10** as an approximate balance of visible interface surfaces. Photography and technical media have their own tonal range.
+- Catalog: application filters above large, open equipment previews; product links and URL-based category selection remain functional.
+- Product pages: a full-width heading and summary, equipment image with enlargement, configuration summary, specifications, applications, documents and adjacent products. The manufacturer photograph replaces the illustrative fallback when available.
+- Manufacturing and company: spacious editorial columns with relevant material studies. Projects use a readable organisation/sector table; resources group PDF documents by purpose.
+- Enquiries: product selection carries through from product links. The form creates a reviewable email draft, with an email-app action and copy fallback. It does not directly send an email.
+- Layouts adapt to narrow phones, tablets and desktop, with a collapsible mobile navigation and keyboard-accessible controls.
 
-| Share | Color | Use |
-| --- | --- | --- |
-| 70% | Warm white `#FCFBF8` and white `#FFFFFF` | Page canvas, header, product lists and open reading areas. |
-| 20% | Pale blue `#F1F6FF` and `#EDF2FC` | Image controls, grouped specifications, filters and the enquiry section. |
-| 10% | Signal red `#BF202B` and royal blue `#1B4EF5` | Use the logo?s red for emphasis and cobalt for primary actions, category navigation, selection and focus. Navy grounds the homepage introduction and enquiry section. |
+### Motion and preserved intro
 
-- Use `#191A19` for text, `#555856` for secondary copy, `#657693` for essential control borders, and `#951722` for red button hovers. Inside a technical preview, use a near-black `#151922` canvas and light `#D5DDEF` labels.
-- White on `#1B4EF5` has **6.08:1** contrast. White on `#3874FF` and `#5996FF` has **4.11:1** and **2.90:1**, respectively. Use those two fills for accents and keep normal text on tested combinations. Dark text `#111827` on `#5996FF` has **6.11:1**. Use an underline, visible focus outline, or state label wherever a color change carries meaning. [WCAG text contrast](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) · [WCAG non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)
+The original intro initializer, markup, SVG, JavaScript and animation rules are preserved. Its styles now live in `src/static/intro.css`. Timing, easing, assembly and logo docking behavior are unchanged.
 
-### Typography
+Text in editorial content groups appears character by character when each group enters the viewport, including supporting paragraphs, labels and links. Related blocks type in parallel with a short stagger and finish within approximately 1.5 seconds. The final layout is reserved throughout; original text remains available to assistive technology. Motion waits for the intro to finish, runs once per group, and completes immediately on keyboard focus or reduced-motion preference. Forms, live messages and operational controls remain immediate.
 
-| Typeface | Research and decision |
-| --- | --- |
-| **Inter Variable** | Selected for headings, navigation, body copy, and form controls. Its display optical sizes provide the editorial heading rhythm in the references. The text optical sizes prioritize small-size legibility for dense product copy. [Inter specimen and license](https://rsms.me/inter/) |
-| **IBM Plex Mono Regular** | Selected for short product identifiers, units, labels, and numerical specification values. Use sentence case and Inter for long labels or explanations. [IBM Plex source and license](https://github.com/IBM/plex) |
-| **Space Grotesk** | Considered for display type because of its distinctive grotesk forms and features for technical figures. Inter gives the site a quieter heading voice and covers body and display with one shared font family. [Space Grotesk specimen](https://floriankarsten.github.io/space-grotesk/) |
-| **Manrope** | Considered for its clean geometric construction. It would give the site a rounder feel than the two references. [Manrope upstream description](https://github.com/google/fonts/blob/main/ofl/manrope/DESCRIPTION.en_us.html) |
-
-Set the desktop hero to roughly 64–80 px at 600–650 weight and mobile to 36–48 px. Use 36–48 px for desktop section titles, 26–34 px on mobile, 16–18 px body, and 13–14 px for short technical labels. Keep paragraphs around 60–70 characters per line. Self-host WOFF2 with the license notices, retain engineering and punctuation glyphs when subsetting, and use system sans and mono fallbacks.
-
-### Page compositions
-
-- **Home.** Lead with the interactive switchboard and one product link. Use three illustrated category links and a short project reference section below.
-- **Catalog.** Show compact illustrated rows beside the category filters. Each product detail has a panel switcher, section links and adjacent products at the end.
-- **Product detail.** Open with the product name, summary, quote action, gallery, and a compact summary of approved key specs. Follow with applications, options, a full specification list or table, related brochure, and relevant projects. Where source material supports it, add a contained dark technical view with a line drawing or orthographic render. Place the dimensions and labels in accessible page content next to the image.
-- **Capabilities, projects, and resources.** Alternate clear text columns with wide facility and installation photographs. Give projects an application, supplied equipment, and verified scope. Group resources by document type and show the version or date next to the download link when available.
-- **Responsive layout.** Align sections to common outer rules up to 1,536 px wide. On narrow phones, stack the introduction, image, controls and product index in reading order. Give the image controls at least 44 px of touch space. Review at 320 px, 390 px, 768 px and 1,440 px.
-
-### Subtle motion
-
-| Trigger | Motion | Settled state and reduced-motion behavior |
-| --- | --- | --- |
-| First site visit in a tab or a page reload | Red stripes slide in from the left and the blue base from the right. The assembled logo shrinks and moves into the header as the white backdrop fades to reveal the page. | Tap, press Escape or move keyboard focus to dismiss early. Reduced motion opens directly to the destination page. |
-| Initial hero render | Keep the headline and quote action visible from first paint. A short 250–350 ms fade on already-loaded media is optional. | The image has a reserved aspect ratio and remains still. Show it immediately with reduced motion. |
-| Scroll through hero and desktop product index | Translate the cropped hero image up to 36 px. Keep the index illustration pinned beside its product groups and crossfade when the next group reaches mid-screen. | With reduced motion, keep the hero still and switch index images immediately. Stack the illustration above the list on phones. |
-| Visitors select a material study | The previous and next buttons cycle through the three studies. Crossfade the image and update the visible caption and slide count. | Keyboard and touch activate the same buttons. The caption announces each selection and the reduced-motion view switches immediately. |
-| Selected below-the-fold sections enter view | One 300–450 ms eased reveal with an 8–12 px rise on supporting media. | Once visible, the media stays in place. Reduced-motion and script-free views show the content immediately. |
-| Mobile menu and product image view change | Open or close in about 180–220 ms. Swap already loaded views with a brief crossfade. | Menu focus follows the open state and returns on close. Reduced-motion changes are immediate. |
-
-Keep scrolling native and equipment still by default. Use short, user-controlled changes to communicate interaction state and keep content and navigation usable with `prefers-reduced-motion`. [W3C animation guidance](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions)
+The footer follows the supplied spacious white reference: three compact information columns, a large blue SAMCON home-link, a lower contact block and a quiet bottom line. It uses existing company, location and email details without adding a newsletter or unsupported contact information.
 
 ## Product research and generated imagery
 
