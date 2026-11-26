@@ -6,6 +6,25 @@ Help procurement teams, electrical consultants, and project engineers find the r
 
 The first local implementation uses dependency-free Node.js static rendering with shared templates and structured product data. The package registry was unavailable in this workspace. Connect the delivery endpoint after the sales workflow and hosting are confirmed.
 
+## Research brief for the redesign
+
+**Positioning.** Samcon is a panel engineering partner for contractors, consultants, procurement teams and plant engineers. Lead with general arrangement drawings and a bill of materials before manufacture, tests customers can witness, and as-built diagrams after testing. Use approved extracts from the same assembly to show what buyers receive at each stage. The combination of electrical distribution and HVAC controls gives Samcon a specific story to tell through project evidence.
+
+**Market benchmarks.** Schneider shows how to guide system selection. Siemens shows how to explain operation and maintenance. Tricolite makes references easy to find by sector. Urmi makes testing credentials visible early. Allied Engineers has OEM-published corroboration. The Pune Airport tender cited in the research illustrates why buyers need a report matched to the required assembly configuration, fault level and ingress protection.
+
+**Recommended navigation.** Panels · Manufacturing & Testing · Projects · Documents · About. Keep Request a quote prominent across desktop and mobile. The logo links home. Place sales contact on the enquiry page and in the footer. Keep CSR under About and in the footer.
+
+| Page | Redesign priority |
+| --- | --- |
+| Homepage | Lead with “Industrial switchboards and motor control panels,” a supporting line about Asangaon and the applications served, and an **Explore panels** action. Give one finished lineup visual priority, then link to engineering and project evidence. |
+| Panels | Help buyers choose between fixed, drawout and intelligent MCC options. Pilot Drawout with a real feeder photo showing service, test and isolated positions, then apply the format to PCC/MCC and AHU. Link configurations to applicable drawings and test reports. |
+| Manufacturing & Testing | Show the work at Asangaon, from fabrication and assembly through witnessed testing and handover. Present factory equipment ratings and assembly test ratings in their own context. |
+| Projects | Lead with two or three approved profiles. Record the sector, year, contracting customer, panel scope, image and product links. Start with Shirdi Airport (JD Electrical, PCC, MCC and feeder pillars) and the Blue Star hospitality entry (PCC and AHU). Confirm scope, completion and permission to publish. |
+| Documents | Group brochures, installation materials, test reports and approvals. Record product, issuer, date or revision, and tested scope. Let buyers request a controlled report with that document preselected. Verify the current scope of OEM appointments and approvals, including legacy L&T Ti references and the Maha Metro claim. |
+| Enquiries | Carry the selected panel into the form and support a single-line diagram or load schedule once file handling and sales delivery are configured. |
+
+**Assets to collect first.** One recent approved case study and one product-specific qualification pack. Prioritise photographs of a completed lineup, a withdrawn feeder, fabrication and a witnessed test setup. Use concept illustrations to orient buyers and approved photography to document manufacturing and project work.
+
 ## Current site audit
 
 - The legacy homepage leads with rotating banners and a company introduction. Product families sit inside a dropdown, while projects, credentials, and downloads are spread across the navigation and homepage. Give the product catalog its own landing page and use the homepage to guide buyers from relevant products to proof and an enquiry. [Legacy Samcon homepage](https://www.sme.in/samconicpl/)
@@ -28,7 +47,7 @@ The requested `/samconicpl/index.html` could not be fetched during the audit. Th
 | About | `/about/` and `/about/csr/` | Read the company story and core values, find current credentials, and access CSR information. |
 | Contact | `/contact/` | Submit an enquiry, call or email sales, and find verified office and factory details. |
 
-Use **Products, Capabilities, Projects, Resources, About, Contact** in the header. The logo links home and the quote button opens Contact with the enquiry form in view. Keep CSR discoverable from About and the footer. The suggested catalog groups below provide a starting point for buyer-friendly navigation.
+Use the proposed header labels in the research brief. The quote button opens Contact with the enquiry form in view. The suggested catalog groups below provide a starting point for buyer-friendly navigation.
 
 | Catalog group | Existing families and proposed product slugs |
 | --- | --- |
