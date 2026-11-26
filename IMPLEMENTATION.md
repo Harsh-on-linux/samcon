@@ -99,6 +99,7 @@ Set the desktop hero to roughly 64–80 px at 600–650 weight and mobile to 36�
 
 | Trigger | Motion | Settled state and reduced-motion behavior |
 | --- | --- | --- |
+| First site visit in a tab or a page reload | Red stripes slide in from the left and the blue base from the right. The assembled logo shrinks and moves into the header as the white backdrop fades to reveal the page. | Tap, press Escape or move keyboard focus to dismiss early. Reduced motion opens directly to the destination page. |
 | Initial hero render | Keep the headline and quote action visible from first paint. A short 250–350 ms fade on already-loaded media is optional. | The image has a reserved aspect ratio and remains still. Show it immediately with reduced motion. |
 | Scroll through hero and desktop product index | Translate the cropped hero image up to 36 px. Keep the index illustration pinned beside its product groups and crossfade when the next group reaches mid-screen. | With reduced motion, keep the hero still and switch index images immediately. Stack the illustration above the list on phones. |
 | Visitors select a material study | The previous and next buttons cycle through the three studies. Crossfade the image and update the visible caption and slide count. | Keyboard and touch activate the same buttons. The caption announces each selection and the reduced-motion view switches immediately. |

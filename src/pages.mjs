@@ -21,9 +21,9 @@ function button(label, href, style = 'primary') {
   return `<a class="button button--${style}" href="${escape(href)}">${escape(label)}</a>`;
 }
 
-function wordmark(animate = false) {
+function wordmark() {
   return `<a href="/" class="wordmark" aria-label="Samcon home">
-    ${animate ? logoArtwork : '<img src="/assets/samcon.svg" width="80" height="49" alt="">'}
+    <img src="/assets/samcon.svg" width="120" height="73" alt="">
     <span class="company-lockup">Industrial Controls<small>Private Limited</small></span>
   </a>`;
 }
@@ -50,19 +50,24 @@ function layout({ path, title, description, content, isHome = false }) {
   <link rel="preload" href="/assets/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/site.css">
   <link rel="stylesheet" href="/grid.css">
-  ${isHome ? `<script>try {
-    if (!sessionStorage.getItem('samcon-intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.documentElement.classList.add('brand-intro');
-      sessionStorage.setItem('samcon-intro', 'seen');
+  <script>
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let playIntro = performance.getEntriesByType('navigation')[0]?.type === 'reload';
+      try {
+        playIntro ||= !sessionStorage.getItem('samcon-intro');
+        if (playIntro) sessionStorage.setItem('samcon-intro', 'seen');
+      } catch {}
+      if (playIntro) document.documentElement.classList.add('brand-intro');
     }
-  } catch {}</script>` : ''}
+  </script>
   <script src="/site.js" defer></script>
 </head>
 <body id="top"${isHome ? ' class="home-page"' : ''}>
+  <div class="site-intro" data-brand-intro aria-hidden="true">${logoArtwork}</div>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" data-header>
     <div class="frame header-inner">
-      ${wordmark(isHome)}
+      ${wordmark()}
       <button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" hidden data-menu-toggle>
         <span>Menu</span><span class="menu-icon" aria-hidden="true"></span>
       </button>

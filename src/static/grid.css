@@ -331,7 +331,6 @@ body::before {
   }
 }
 
-.wordmark svg { display: block; width: 4.7rem; height: auto; }
 @media (min-width: 64rem) {
   .site-nav > a:is(:hover,[data-active]) { text-decoration: none; }
 }
@@ -536,16 +535,94 @@ html { scroll-padding-block-start: calc(var(--header-height, 5rem) + .9rem); }
   .home-range li span { bottom:auto; top:0; }
 }
 @media(max-width: 44rem) {
-  .wordmark svg { width: 3.7rem; }
   .page-intro, .project-examples { grid-template-columns: 1fr; }
   .page-intro h1 { margin-block: 1.4rem .85rem; }
   .page-intro .lead { margin: 0 0 1.4rem; font-size: 1rem; }
 }
-@media(prefers-reduced-motion: no-preference) {
-  @keyframes ink-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
-  .brand-intro .wordmark svg path:first-of-type { animation: ink-in 480ms var(--ease) both; }
-  .brand-intro .wordmark svg text:first-of-type { animation: ink-in 380ms 120ms var(--ease) both; }
-  .brand-intro .wordmark svg path:last-of-type, .brand-intro .wordmark svg text:last-of-type { animation: ink-in 400ms 220ms var(--ease) both; }
-  .brand-intro .site-header .company-lockup { animation: enter-spread 420ms 180ms var(--ease) both; }
+.site-intro { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .brand-intro .site-intro {
+    --intro-assembly: 740ms;
+    --intro-handoff: 900ms;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    animation: logo-intro-hide 0s linear calc(var(--intro-assembly) + var(--intro-handoff)) forwards;
+  }
+
+  .site-intro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--white);
+    animation: logo-intro-reveal var(--intro-handoff) ease-in-out var(--intro-assembly) both;
+  }
+
+  .site-intro svg {
+    display: block;
+    width: clamp(9.5rem, 24vmin, 14rem);
+    height: auto;
+    overflow: visible;
+  }
+
+  .brand-intro:not(.brand-intro-dock) .site-intro svg {
+    animation: logo-intro-reveal var(--intro-handoff) ease-in-out var(--intro-assembly) both;
+  }
+
+  .brand-intro-dock .site-intro { animation: none; }
+
+  .brand-intro-dock .site-intro svg {
+    animation: logo-intro-dock var(--intro-handoff) cubic-bezier(.45, 0, .22, 1) var(--intro-assembly) both;
+  }
+
+  .brand-intro-dock .header-inner > .wordmark img { visibility: hidden; }
+
+  .site-intro .logo-stripes path {
+    --entry-offset: max(-36vw, -16rem);
+    animation: logo-slide 540ms var(--ease) both;
+  }
+
+  .site-intro .logo-stripes path:nth-child(2) { animation-delay: 25ms; }
+  .site-intro .logo-stripes path:nth-child(3) { animation-delay: 50ms; }
+  .site-intro .logo-stripes path:nth-child(4) { animation-delay: 75ms; }
+
+  .site-intro .logo-base {
+    --entry-offset: min(36vw, 16rem);
+    animation: logo-slide 560ms var(--ease) 55ms both;
+  }
+
+  .site-intro .logo-name { animation: logo-name-in 355ms var(--ease) 280ms both; }
+
+  @keyframes logo-slide {
+    from { opacity: 0; transform: translateX(var(--entry-offset)); }
+    40% { opacity: 1; }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes logo-name-in {
+    from { opacity: 0; transform: translateY(.3rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes logo-intro-dock {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(var(--intro-x), var(--intro-y)) scale(var(--intro-scale)); }
+  }
+
+  @keyframes logo-intro-reveal {
+    10% { opacity: 1; }
+    85%, 100% { opacity: 0; }
+  }
+
+  @keyframes logo-intro-hide {
+    to { visibility: hidden; }
+  }
+
   .in-view:is(.location-study,.feature-image,.workshop-art) img, .image-view[open] img { animation: open-plate 520ms var(--ease); }
 }

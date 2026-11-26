@@ -34,6 +34,50 @@ if (header && menuToggle && menu) {
   matchMedia('(min-width: 64rem)').addEventListener('change', () => setMenu(false));
 }
 
+const brandIntro = document.querySelector('[data-brand-intro]');
+const page = document.documentElement;
+if (brandIntro && page.classList.contains('brand-intro')) {
+  const introEvents = new AbortController();
+  const { signal } = introEvents;
+  const introLogo = brandIntro.querySelector('svg');
+  const headerLogo = header?.querySelector('.wordmark img');
+
+  function alignIntroLogo() {
+    const backdrop = brandIntro.getBoundingClientRect();
+    const destination = headerLogo.getBoundingClientRect();
+    const logoWidth = parseFloat(getComputedStyle(introLogo).width);
+    if (!logoWidth || !destination.width) return;
+
+    const x = destination.left + destination.width / 2 - (backdrop.left + backdrop.width / 2);
+    const y = destination.top + destination.height / 2 - (backdrop.top + backdrop.height / 2);
+    brandIntro.style.setProperty('--intro-x', `${x}px`);
+    brandIntro.style.setProperty('--intro-y', `${y}px`);
+    brandIntro.style.setProperty('--intro-scale', destination.width / logoWidth);
+    page.classList.add('brand-intro-dock');
+  }
+
+  function dismissIntro() {
+    page.classList.remove('brand-intro', 'brand-intro-dock');
+    introEvents.abort();
+  }
+
+  if (introLogo && headerLogo) {
+    alignIntroLogo();
+    window.addEventListener('resize', alignIntroLogo, { signal });
+    window.addEventListener('scroll', alignIntroLogo, { passive: true, signal });
+  }
+
+  brandIntro.addEventListener('animationend', (event) => {
+    if (event.animationName === 'logo-intro-dock' || event.animationName === 'logo-intro-hide') dismissIntro();
+  }, { signal });
+  brandIntro.addEventListener('pointerdown', dismissIntro, { signal });
+  document.addEventListener('focusin', dismissIntro, { signal });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') dismissIntro();
+  }, { signal });
+  matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', dismissIntro, { signal });
+}
+
 const productFigure = document.querySelector('[data-source-image]');
 const directory = document.querySelector('.panel-browser details');
 if (directory) {
