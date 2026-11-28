@@ -57,13 +57,13 @@ Use the proposed header labels in the research brief. The quote button opens Con
 
 ## Current visual direction
 
-The November 2026 redesign uses a white canvas, oversized Practive display typography and open layouts. The homepage leads with “Power. Under control.” above a wide equipment view, followed by an application-based directory of all nine panel families, a manufacturing explanation and project references. Sections contain navigation, equipment information or a clear next action; there are no ornamental grids, counters, badges or continuously moving elements.
+The November 2026 redesign uses a white canvas, oversized Roboto headings and Lora body typography and open layouts. The homepage leads with a full-width electrical manufacturing scene behind “Power. Under control.”, white supporting copy and clear product/project actions, followed by an application-based directory of all nine panel families, a manufacturing explanation and project references. Sections contain navigation, equipment information or a clear next action; there are no ornamental grids, counters, badges or continuously moving elements.
 
 ### Palette and typography
 
 - Logo blue `#17449b` leads the headings, manufacturing section and oversized footer wordmark. Logo red `#d62536` identifies primary enquiry actions. White `#ffffff`, equipment grey `#f0f1f3`, charcoal `#292c31` and secondary grey `#62666e` complete the palette.
-- Self-hosted Practive Semibold, weight 600, is used for display headings. Inter remains the body and interface face for readable technical content and forms.
-- The supplied Practive archive is marked personal/non-commercial use. Its original readme and licensing information are retained in `src/static/assets/fonts/`; obtain commercial permission before a public business launch.
+- The supplied typography reference is applied site-wide: self-hosted Roboto for all headings and display titles; self-hosted Lora for body copy, navigation, labels, forms and controls. Lora includes regular and italic variable faces.
+- Font files come from Google Fonts, with their original SIL Open Font License notices in `src/static/assets/fonts/ROBOTO-LICENSE.txt` and `LORA-LICENSE.txt`. Earlier font assets remain archived but are no longer loaded. Logo artwork and its intro animation are unchanged.
 
 ### Page compositions and behavior
 
@@ -77,9 +77,11 @@ The November 2026 redesign uses a white canvas, oversized Practive display typog
 
 The original intro initializer, markup, SVG, JavaScript and animation rules are preserved. Its styles now live in `src/static/intro.css`. Timing, easing, assembly and logo docking behavior are unchanged.
 
-Text in editorial content groups appears character by character when each group enters the viewport, including supporting paragraphs, labels and links. Related blocks type in parallel with a short stagger and finish within approximately 1.5 seconds. The final layout is reserved throughout; original text remains available to assistive technology. Motion waits for the intro to finish, runs once per group, and completes immediately on keyboard focus or reduced-motion preference. Forms, live messages and operational controls remain immediate.
+Only homepage editorial groups and the shared footer use character-by-character typing when revealed, including supporting paragraphs, labels and links. Inner-page main content is immediately visible. Related blocks type in parallel with a short stagger and finish within approximately 1.5 seconds. The final layout is reserved throughout; original text remains available to assistive technology. Motion waits for the intro to finish, runs once per group, and completes immediately on keyboard focus or reduced-motion preference. Forms, live messages and operational controls remain immediate.
 
-The footer follows the supplied spacious white reference: three compact information columns, a large blue SAMCON home-link, a lower contact block and a quiet bottom line. It uses existing company, location and email details without adding a newsletter or unsupported contact information.
+The footer keeps the reference’s spacious composition with a red surface and entirely black text, including its oversized SAMCON home-link. Header and main content form an opaque cover that scrolls away from a bottom-sticky footer when the footer fits the viewport. Taller phone/zoom layouts and reduced-motion views use normal document flow so all links remain reachable. Footer typing starts when the main content uncovers it. A main-end marker and an uncovered-geometry check cover ordinary scrolling, fast jumps and restored scroll positions. Direct footer links wait for the original intro and font layout before moving to the end of the content cover.
+
+Homepage product copy is red. Individual product links open a small equipment preview on hover or keyboard focus; touch views use a compact bottom card with a dedicated View panel action and a close control. Escape, outside interaction, scrolling and resizing dismiss the preview. The generated homepage atmosphere and its final prompt are documented in `references/home-atmosphere.md`; it depicts a conceptual manufacturing hall rather than an actual Samcon facility. The homepage header overlays the hero, then returns to its standard white style as the visitor scrolls into the content.
 
 ## Product research and generated imagery
 

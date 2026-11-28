@@ -78,6 +78,17 @@ if (brandIntro && page.classList.contains('brand-intro')) {
   matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', dismissIntro, { signal });
 }
 
+const homeHero = document.querySelector('.home-page .landing');
+if (homeHero && header) {
+  function updateHeroHeader() {
+    header.toggleAttribute('data-over-hero', homeHero.getBoundingClientRect().bottom > header.offsetHeight + 16);
+  }
+  window.addEventListener('scroll', updateHeroHeader, { passive: true });
+  window.addEventListener('resize', updateHeroHeader, { passive: true });
+  if ('ResizeObserver' in window) new ResizeObserver(updateHeroHeader).observe(homeHero);
+  updateHeroHeader();
+}
+
 const productFigure = document.querySelector('[data-source-image]');
 const directory = document.querySelector('.panel-browser details');
 if (directory) {
@@ -156,7 +167,64 @@ if (filterControls && filterStatus) {
 }
 
 const textMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
-const typewriterSections = [...document.querySelectorAll('[data-typewriter]')]
+const siteFooter = document.querySelector('.site-footer');
+const footerRevealTrigger = document.querySelector('[data-footer-trigger]');
+const siteContent = document.querySelector('[data-site-content]');
+
+function updateFooterReveal() {
+  const fitsViewport = siteFooter && siteFooter.offsetHeight <= innerHeight;
+  document.body.classList.toggle('has-footer-reveal', Boolean(siteContent && footerRevealTrigger && fitsViewport && !textMotionPreference.matches));
+}
+
+if (siteFooter && 'ResizeObserver' in window) new ResizeObserver(updateFooterReveal).observe(siteFooter);
+window.addEventListener('resize', updateFooterReveal, { passive: true });
+textMotionPreference.addEventListener('change', updateFooterReveal);
+updateFooterReveal();
+
+let footerHashPending = false;
+let footerHashLayoutReady = !document.fonts;
+
+function applyFooterHashNavigation() {
+  if (!footerHashPending || !footerHashLayoutReady || location.hash !== '#footer' || page.classList.contains('brand-intro')) return;
+  footerHashPending = false;
+  updateFooterReveal();
+  const coverEnd = scrollY + siteContent.getBoundingClientRect().bottom;
+  window.scrollTo({ left: scrollX, top: Math.max(0, coverEnd), behavior: 'instant' });
+}
+
+function requestFooterHashNavigation() {
+  footerHashPending = Boolean(siteFooter && siteContent && footerRevealTrigger && location.hash === '#footer');
+  if (footerHashPending) setTimeout(applyFooterHashNavigation, 0);
+}
+
+if (document.fonts) {
+  document.fonts.ready.then(() => {
+    footerHashLayoutReady = true;
+    applyFooterHashNavigation();
+  });
+}
+if (page.classList.contains('brand-intro')) {
+  const footerHashIntroObserver = new MutationObserver(() => {
+    if (page.classList.contains('brand-intro')) return;
+    footerHashIntroObserver.disconnect();
+    applyFooterHashNavigation();
+  });
+  footerHashIntroObserver.observe(page, { attributes: true, attributeFilter: ['class'] });
+}
+window.addEventListener('hashchange', requestFooterHashNavigation);
+window.addEventListener('pageshow', requestFooterHashNavigation);
+document.addEventListener('click', event => {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || location.hash !== '#footer') return;
+  const link = event.target.closest('a[href]');
+  if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+  if (link.href === location.href) {
+    event.preventDefault();
+    requestFooterHashNavigation();
+  }
+});
+requestFooterHashNavigation();
+
+const typewriterSections = [...document.querySelectorAll('.home-page main [data-typewriter], .site-footer[data-typewriter]')]
   .filter(section => section.dataset.typewriter !== 'off' && !section.parentElement.closest('[data-typewriter]'));
 
 if (textMotionPreference.matches || !('IntersectionObserver' in window)) {
@@ -284,21 +352,38 @@ if (textMotionPreference.matches || !('IntersectionObserver' in window)) {
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
-      playSection(entry.target);
+      playSection(entry.target === footerRevealTrigger ? siteFooter : entry.target);
       observer.unobserve(entry.target);
     }
   }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+
+  // A fast scroll can skip the one-pixel sentinel, so also check the uncovered footer.
+  function revealUncoveredFooter() {
+    if (!siteFooter || !siteContent || siteFooter.dataset.typewriterState !== 'pending' || page.classList.contains('brand-intro')) return;
+    const footer = siteFooter.getBoundingClientRect();
+    const coverBottom = siteContent.getBoundingClientRect().bottom;
+    if (coverBottom < innerHeight && footer.bottom > 0 && footer.top < innerHeight) {
+      playSection(siteFooter);
+      observer.unobserve(footerRevealTrigger || siteFooter);
+    }
+  }
+  window.addEventListener('scroll', revealUncoveredFooter, { passive: true });
+  window.addEventListener('resize', revealUncoveredFooter, { passive: true });
+  window.addEventListener('pageshow', () => setTimeout(revealUncoveredFooter, 0));
+  window.addEventListener('hashchange', () => setTimeout(revealUncoveredFooter, 0));
 
   // Preserve the original logo handoff before starting scroll-triggered text.
   let introObserver;
   function observeSections() {
     if (page.classList.contains('brand-intro')) return;
     introObserver?.disconnect();
+    revealUncoveredFooter();
     requestAnimationFrame(() => {
       if (textMotionPreference.matches) return;
       for (const section of typewriterSections) {
-        if (section.dataset.typewriterState === 'pending') observer.observe(section);
+        if (section.dataset.typewriterState === 'pending') observer.observe(section === siteFooter && footerRevealTrigger ? footerRevealTrigger : section);
       }
+      revealUncoveredFooter();
     });
   }
   if (page.classList.contains('brand-intro')) {
@@ -314,6 +399,198 @@ if (textMotionPreference.matches || !('IntersectionObserver' in window)) {
     observer.disconnect();
     typewriterSections.forEach(completeSection);
   });
+}
+
+const productPreview = document.querySelector('[data-product-preview-card]');
+const previewTriggers = [...document.querySelectorAll('.home-page a[data-product-preview]')];
+
+if (productPreview && previewTriggers.length) {
+  const image = productPreview.querySelector('[data-preview-image]');
+  const title = productPreview.querySelector('[data-preview-title]');
+  const description = productPreview.querySelector('[data-preview-description]');
+  const productLink = productPreview.querySelector('[data-preview-link]');
+  const closeButton = productPreview.querySelector('[data-preview-close]');
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+  const smallViewport = matchMedia('(max-width: 47.99rem)');
+  let activeTrigger = null;
+  let closeTimer = null;
+  let inputMode = 'keyboard';
+  let suppressFocus = false;
+
+  productPreview.id ||= 'product-preview';
+  productPreview.setAttribute('role', 'region');
+  productPreview.setAttribute('aria-label', 'Product preview');
+  productPreview.hidden = true;
+
+  function cancelPreviewClose() {
+    clearTimeout(closeTimer);
+    closeTimer = null;
+  }
+
+  function unlinkPreview(trigger) {
+    if (!trigger) return;
+    const ids = (trigger.getAttribute('aria-describedby') || '').split(/\s+/)
+      .filter(id => id && id !== productPreview.id);
+    if (ids.length) trigger.setAttribute('aria-describedby', ids.join(' '));
+    else trigger.removeAttribute('aria-describedby');
+  }
+
+  function closePreview(restoreFocus = false) {
+    cancelPreviewClose();
+    const trigger = activeTrigger;
+    if (!trigger && productPreview.hidden) return;
+    restoreFocus ||= productPreview.contains(document.activeElement);
+    activeTrigger = null;
+    unlinkPreview(trigger);
+    productPreview.classList.remove('is-open');
+    productPreview.hidden = true;
+    if (restoreFocus && trigger) {
+      suppressFocus = true;
+      trigger.focus({ preventScroll: true });
+      suppressFocus = false;
+    }
+  }
+
+  function queuePreviewClose() {
+    cancelPreviewClose();
+    closeTimer = setTimeout(() => {
+      closeTimer = null;
+      if (!activeTrigger?.contains(document.activeElement) && !productPreview.contains(document.activeElement)) closePreview();
+    }, 160);
+  }
+
+  function queueHoverPreviewClose(event) {
+    if (event.pointerType === 'mouse' && finePointer.matches) queuePreviewClose();
+  }
+
+  function positionPreview(trigger, pointer) {
+    const bottom = !finePointer.matches || smallViewport.matches;
+    productPreview.classList.toggle('is-bottom', bottom);
+    if (bottom) {
+      productPreview.style.removeProperty('left');
+      productPreview.style.removeProperty('top');
+      return;
+    }
+    const margin = 16;
+    const gap = 22;
+    const bounds = trigger.getBoundingClientRect();
+    const card = productPreview.getBoundingClientRect();
+    let left = pointer ? pointer.clientX + gap : bounds.right + gap;
+    let top = pointer ? pointer.clientY + gap : bounds.top;
+    if (left + card.width > innerWidth - margin) left = (pointer ? pointer.clientX : bounds.left) - card.width - gap;
+    if (top + card.height > innerHeight - margin) top = (pointer ? pointer.clientY : bounds.bottom) - card.height - gap;
+    left = Math.max(margin, Math.min(left, innerWidth - card.width - margin));
+    top = Math.max(margin, Math.min(top, innerHeight - card.height - margin));
+    productPreview.style.left = `${Math.round(left)}px`;
+    productPreview.style.top = `${Math.round(top)}px`;
+  }
+
+  function openPreview(trigger, pointer) {
+    cancelPreviewClose();
+    if (activeTrigger !== trigger) unlinkPreview(activeTrigger);
+    activeTrigger = trigger;
+    image.src = trigger.dataset.previewImage;
+    image.alt = trigger.dataset.previewName;
+    title.textContent = trigger.dataset.previewName;
+    description.textContent = trigger.dataset.previewDescription;
+    productLink.href = trigger.href;
+    const describedBy = new Set((trigger.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean));
+    describedBy.add(productPreview.id);
+    trigger.setAttribute('aria-describedby', [...describedBy].join(' '));
+    productPreview.hidden = false;
+    productPreview.classList.add('is-open');
+    positionPreview(trigger, pointer);
+  }
+
+  const previewFocusables = () => [...productPreview.querySelectorAll('a[href], button:not([disabled]), [tabindex]')]
+    .filter(element => element.tabIndex >= 0 && element.getClientRects().length);
+
+  for (const trigger of previewTriggers) {
+    trigger.addEventListener('pointerdown', event => { inputMode = event.pointerType; });
+    trigger.addEventListener('pointerenter', event => {
+      if (finePointer.matches && event.pointerType === 'mouse') openPreview(trigger, event);
+    });
+    trigger.addEventListener('pointermove', event => {
+      if (activeTrigger === trigger && finePointer.matches && event.pointerType === 'mouse') positionPreview(trigger, event);
+    });
+    trigger.addEventListener('pointerleave', queueHoverPreviewClose);
+    trigger.addEventListener('focus', () => {
+      const keyboardOrDesktopMouse = inputMode === 'keyboard' || (inputMode === 'mouse' && finePointer.matches && !smallViewport.matches);
+      if (!suppressFocus && keyboardOrDesktopMouse) openPreview(trigger);
+    });
+    trigger.addEventListener('focusout', queuePreviewClose);
+    trigger.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        openPreview(trigger);
+        previewFocusables()[0]?.focus({ preventScroll: true });
+        return;
+      }
+      if (activeTrigger !== trigger || productPreview.hidden) return;
+      if (event.key === 'Tab' && !event.shiftKey) {
+        event.preventDefault();
+        previewFocusables()[0]?.focus({ preventScroll: true });
+      }
+    });
+    trigger.addEventListener('click', event => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const touchClick = event.detail > 0 && (inputMode === 'touch' || inputMode === 'pen' || !finePointer.matches || smallViewport.matches);
+      if (!touchClick) {
+        closePreview();
+        return;
+      }
+      if (activeTrigger !== trigger) {
+        event.preventDefault();
+        openPreview(trigger);
+      } else {
+        closePreview();
+      }
+    });
+  }
+
+  productPreview.addEventListener('pointerenter', cancelPreviewClose);
+  productPreview.addEventListener('pointerleave', queueHoverPreviewClose);
+  productPreview.addEventListener('focusin', cancelPreviewClose);
+  productPreview.addEventListener('focusout', event => {
+    if (!productPreview.contains(event.relatedTarget) && !activeTrigger?.contains(event.relatedTarget)) queuePreviewClose();
+  });
+  productPreview.addEventListener('keydown', event => {
+    if (event.key !== 'Tab' || !activeTrigger) return;
+    const focusables = previewFocusables();
+    if (event.shiftKey && document.activeElement === focusables[0]) {
+      event.preventDefault();
+      activeTrigger.focus({ preventScroll: true });
+    } else if (!event.shiftKey && document.activeElement === focusables.at(-1)) {
+      const links = [...document.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]')]
+        .filter(element => !productPreview.contains(element) && element.tabIndex >= 0 && element.getClientRects().length);
+      const next = links[links.indexOf(activeTrigger) + 1];
+      if (next) {
+        event.preventDefault();
+        closePreview();
+        next.focus();
+      }
+    }
+  });
+  productLink.addEventListener('click', () => closePreview());
+  closeButton.addEventListener('click', () => closePreview(true));
+  document.addEventListener('pointerdown', event => {
+    if (activeTrigger && !activeTrigger.contains(event.target) && !productPreview.contains(event.target)) closePreview();
+  });
+  document.addEventListener('keydown', event => {
+    inputMode = 'keyboard';
+    if (event.key === 'Escape' && activeTrigger) {
+      event.preventDefault();
+      closePreview(true);
+    }
+  }, { capture: true });
+  window.addEventListener('scroll', () => {
+    const keyboardFocusWithin = inputMode === 'keyboard' && activeTrigger
+      && (activeTrigger.contains(document.activeElement) || productPreview.contains(document.activeElement));
+    if (keyboardFocusWithin) positionPreview(activeTrigger);
+    else closePreview();
+  }, { passive: true });
+  window.addEventListener('resize', () => closePreview(), { passive: true });
+  finePointer.addEventListener('change', () => closePreview());
 }
 
 const enquiry = document.querySelector('[data-enquiry]');

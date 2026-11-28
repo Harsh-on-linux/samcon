@@ -23,12 +23,13 @@ function button(label, href, style = 'primary') {
 
 function wordmark() {
   return `<a href="/" class="wordmark" aria-label="Samcon home">
-    <img src="/assets/samcon.svg" width="120" height="73" alt="">
+    <span class="wordmark-symbol"><img src="/assets/samcon.svg" width="120" height="73" alt=""></span>
     <span class="company-lockup">Industrial Controls<small>Private Limited</small></span>
   </a>`;
 }
 
 function layout({ path, title, description, content, isHome = false }) {
+  if (!isHome) content = content.replaceAll(' data-typewriter', '');
   const inCompany = companyNav.some(([, href]) => href === path);
   const panel = products.find(item => productPath(item) === path);
   const enquiryLink = panel ? productQuote(panel) : quote;
@@ -47,7 +48,8 @@ function layout({ path, title, description, content, isHome = false }) {
   <meta name="theme-color" content="#ffffff">
   <title>${escape(isHome ? title : `${title} | Samcon`)}</title>
   <link rel="icon" href="/assets/samcon.svg" type="image/svg+xml">
-  <link rel="preload" href="/assets/fonts/practive-semibold.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="/assets/fonts/roboto-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/lora-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/site.css">
   <link rel="stylesheet" href="/intro.css">
   <script>
@@ -64,8 +66,9 @@ function layout({ path, title, description, content, isHome = false }) {
 </head>
 <body id="top"${isHome ? ' class="home-page"' : ''}>
   <div class="site-intro" data-brand-intro aria-hidden="true">${logoArtwork}</div>
+  <div class="site-content" data-site-content>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header" data-header>
+  <header class="site-header" data-header${isHome ? ' data-over-hero' : ''}>
     <div class="frame header-inner">
       ${wordmark()}
       <button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" hidden data-menu-toggle>
@@ -78,7 +81,8 @@ function layout({ path, title, description, content, isHome = false }) {
       <a class="header-quote" href="${enquiryLink}">Discuss a project</a>
     </div>
   </header>
-  <main id="main">${inCompany ? `<nav class="frame company-nav" aria-label="Company"><span>Company</span>${companyNav.map(([label, href]) => `<a href="${href}"${path === href ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>` : ''}${content}</main>
+  <main id="main">${inCompany ? `<nav class="frame company-nav" aria-label="Company"><span>Company</span>${companyNav.map(([label, href]) => `<a href="${href}"${path === href ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>` : ''}${content}<span class="footer-reveal-trigger" data-footer-trigger aria-hidden="true"></span></main>
+  </div>
   <footer class="site-footer" id="footer" data-typewriter>
     <div class="frame footer-grid">
       <div class="footer-identity"><p>Samcon Industrial Controls<br>Private Limited</p><p class="footer-caption">Electrical panel engineering<br>Since 1998</p></div>
@@ -142,15 +146,24 @@ function studyImage(study, priority = false) {
 }
 
 function homePage() {
-  return `<section class="frame landing" data-typewriter aria-labelledby="home-title">
-    <div class="landing-meta"><p class="eyebrow">Electrical control panels</p><p>Engineering since 1998</p></div>
-    <h1 id="home-title"><span class="accent">Power.</span><br>Under control.</h1>
-    <div class="landing-summary"><a class="text-link action-link" href="/products/">Explore our panels</a><p>From incoming power to the last motor feeder. Electrical panel systems engineered around your application, built in Asangaon, India.</p></div>
-    <figure class="landing-equipment"><a href="/products/pcc-mcc/" aria-label="Explore power and motor control centres">${productImage(products[0], {priority: true})}</a><figcaption><span>PCC / MCC</span><span>Power distribution &amp; motor control</span><span>Illustrative configuration</span></figcaption></figure>
+  return `<section class="landing" data-typewriter aria-labelledby="home-title">
+    <figure class="landing-atmosphere"><img src="/assets/home-atmosphere.webp" srcset="/assets/home-atmosphere-960.webp 960w, /assets/home-atmosphere.webp 1774w" sizes="100vw" width="1774" height="887" alt="Conceptual electrical manufacturing hall with steel framing, machinery and switchgear assemblies" fetchpriority="high" decoding="async"></figure>
+    <div class="frame landing-content">
+      <p class="eyebrow">Electrical control panels</p>
+      <h1 id="home-title"><span>Power.</span><br>Under control.</h1>
+      <div class="landing-summary"><p>From incoming power to the last motor feeder. Electrical panel systems engineered around your application, built in Asangaon, India.</p><div class="hero-actions">${button('Explore panels', '/products/')}<a class="text-link" href="/contact/#enquiry">Discuss a project</a></div></div>
+    </div>
+    <div class="frame landing-bottom"><p>Engineering since 1998</p><a href="#panel-range">Find your panel</a></div>
+    <p class="hero-image-note">Conceptual industrial scene</p>
   </section>
   <section class="frame panel-range section-spacing" id="panel-range" aria-labelledby="range-heading">
     <div class="section-heading section-heading--split" data-typewriter><div><p class="eyebrow">The panel range</p><h2 id="range-heading">Built around<br>your application.</h2></div><p class="lead">Nine panel families. One place to find the right starting point for your power and control requirements.</p></div>
-    <div class="range-directory">${groups.map(group => `<section class="range-row" data-typewriter><h3><a href="/products/?group=${group.id}">${group.name}</a></h3><p>${group.summary}</p><ul>${products.filter(product => product.group === group.id).map(product => `<li><a href="${productPath(product)}">${escape(product.name)}</a></li>`).join('')}</ul></section>`).join('')}</div>
+    <div class="range-directory">${groups.map(group => `<section class="range-row" data-typewriter><h3><a href="/products/?group=${group.id}">${group.name}</a></h3><p>${group.summary}</p><ul>${products.filter(product => product.group === group.id).map(product => `<li><a href="${productPath(product)}" data-product-preview data-preview-image="/assets/products/${product.slug}-720.webp" data-preview-name="${escape(product.name)}" data-preview-description="${escape(product.summary)}">${escape(product.name)}</a></li>`).join('')}</ul></section>`).join('')}</div>
+    <aside class="product-preview" id="product-preview" data-product-preview-card role="region" aria-label="Product preview" hidden>
+      <button class="preview-close" type="button" data-preview-close aria-label="Close product preview">Close</button>
+      <img data-preview-image src="/assets/products/drawout-panels-720.webp" width="720" height="540" alt="" decoding="async">
+      <div class="preview-copy"><strong data-preview-title></strong><p data-preview-description></p><a class="text-link" data-preview-link href="/products/">View panel</a></div>
+    </aside>
   </section>
   <section class="manufacturing-band section-spacing" aria-labelledby="manufacturing-title"><div class="frame manufacturing-inner"><div data-typewriter><p class="eyebrow">Made at Samcon</p><h2 id="manufacturing-title">Considered.<br>Inside and out.</h2><a class="text-link" href="/capabilities/">Our manufacturing process</a></div><div class="process-list"><section data-typewriter><h3>Enclosure</h3><p>CNC sheet metal fabrication shapes the panel around its layout, installation and service access.</p></section><section data-typewriter><h3>Assembly</h3><p>Busbars, switchgear and motor feeders come together around the electrical design.</p></section><section data-typewriter><h3>Testing</h3><p>Dimensional, functional and insulation checks support the configured assembly.</p></section></div></div></section>
   <section class="frame home-projects section-spacing" aria-labelledby="applications-title"><div class="section-heading section-heading--split" data-typewriter><div><p class="eyebrow">Project references</p><h2 id="applications-title">Across industries.</h2></div><a class="text-link" href="/projects/">Explore project references</a></div><div class="reference-list">${projectReferences.map(([name, sector]) => `<div data-typewriter><h3>${name}</h3><p>${sector}</p></div>`).join('')}</div></section>`;
